@@ -1,0 +1,8 @@
+﻿Group: Misc
+FriendlyName: LLT site
+SystemName: Misc.LLT
+Version: 1.00
+SupportedVersions: 3.60
+Author: Alexandr Kiselev (alexandr.kiselev.79@gmail.com)
+DisplayOrder: 1
+FileName: Nop.Plugin.Misc.LLT.dll
