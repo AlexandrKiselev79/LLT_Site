@@ -1,0 +1,25 @@
+﻿@model TopMenuModel
+@using Nop.Web.Models.Catalog;
+
+<ul class="top-menu">
+    @foreach (var topic in Model.Topics)
+    {
+        <li><a href="@Url.RouteUrl("Topic", new { SeName = topic.SeName })">@topic.Name</a></li>
+    }
+    @Html.Widget("header_menu_after")
+</ul>
+@{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.menu-toggle').click(function () {
+                $(this).siblings('.top-menu.mobile').slideToggle('slow');
+            });
+            $('.top-menu.mobile .sublist-toggle').click(function () {
+                $(this).siblings('.sublist').slideToggle('slow');
+            });
+        });
+    </script>
+}
+
+
+

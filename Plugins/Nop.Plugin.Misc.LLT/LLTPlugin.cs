@@ -1,7 +1,5 @@
-﻿using System;
-using Nop.Core.Plugins;
+﻿using Nop.Core.Plugins;
 using Nop.Plugin.Misc.LLT.Data;
-using Nop.Web.Framework.Menu;
 
 namespace Nop.Plugin.Misc.LLT
 {

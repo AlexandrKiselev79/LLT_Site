@@ -22,6 +22,43 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
                 .As<IRepository<Player>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<SetResult>>()
+                .As<IRepository<SetResult>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<Match>>()
+                .As<IRepository<Match>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
+
+
+            builder.RegisterType<EfRepository<Address>>()
+                .As<IRepository<Address>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<TennisClub>>()
+                .As<IRepository<TennisClub>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<PlayerResult>>()
+                .As<IRepository<PlayerResult>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<TieBreakResult>>()
+                .As<IRepository<TieBreakResult>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<Tournament>>()
+                .As<IRepository<Tournament>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
         }
 
         public int Order { get; private set; }

@@ -1,8 +1,9 @@
 ﻿@{
-    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+    Layout = "~/Views/Shared/_Root.Head.cshtml";
 }
-<div class="page home-page">
-    <div class="page-body">
-        
+
+<div class="master-wrapper-page">
+    <div class="header-menu">
+        @Html.Action("TopMenu", "LLTCatalog")
     </div>
 </div>

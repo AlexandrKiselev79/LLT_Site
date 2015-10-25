@@ -14,6 +14,12 @@ namespace Nop.Plugin.Misc.LLT
         {
             ViewEngines.Engines.Insert(0, new CustomViewEngine());
 
+            var route = routes.MapRoute("Plugin.Misc.LLT.ViewPlayers",
+                "LLTHome/Players",
+                new { controller = " LLTHome", action = "Players" },
+                new[] { CONTROLLERS_NAMESPACE });
+
+
             //LLT home page
             UpdateRoute(routes, "HomePage", "", "LLTHome", "Index", CONTROLLERS_NAMESPACE);
         }

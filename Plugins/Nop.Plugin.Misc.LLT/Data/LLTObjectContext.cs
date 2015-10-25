@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using Nop.Core;
 using Nop.Core.Infrastructure;
 using Nop.Data;
@@ -17,7 +18,15 @@ namespace Nop.Plugin.Misc.LLT.Data
         
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Configurations.Add(new AddressMap());
+            modelBuilder.Configurations.Add(new MatchMap());
             modelBuilder.Configurations.Add(new PlayerMap());
+            modelBuilder.Configurations.Add(new SetResultMap());
+            modelBuilder.Configurations.Add(new TennisClubMap());
+            modelBuilder.Configurations.Add(new PlayerResultMap());
+            modelBuilder.Configurations.Add(new TieBreakResultMap());
+            modelBuilder.Configurations.Add(new TournamentMap());
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             base.OnModelCreating(modelBuilder);
         }
 
@@ -43,7 +52,14 @@ namespace Nop.Plugin.Misc.LLT.Data
 
         public void Uninstall()
         {
-            this.DropPluginTable("Player");
+            //this.DropPluginTable(TablesName.PlayerResultTable);
+            //this.DropPluginTable(TablesName.TournamentTable);
+            //this.DropPluginTable(TablesName.MatchTable);
+            //this.DropPluginTable(TablesName.TennisClubTable);
+            //this.DropPluginTable(TablesName.TieBreakResultTable);
+            //this.DropPluginTable(TablesName.PlayerTable);
+            //this.DropPluginTable(TablesName.SetResultTable);
+            //this.DropPluginTable(TablesName.AddressTable);
         }
         
         public new IDbSet<TEntity> Set<TEntity>() where TEntity : BaseEntity
