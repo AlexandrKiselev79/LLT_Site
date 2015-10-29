@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstracts\IPlayerService.cs" />
     <Compile Include="Controllers\LLTCatalogcontroller.cs" />
     <Compile Include="Controllers\LLTHomeController.cs" />
     <Compile Include="Data\AddressMap.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="LLTPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteProvider.cs" />
+    <Compile Include="Service\PlayerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Description.txt">
@@ -154,9 +156,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Service\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

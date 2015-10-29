@@ -10,9 +10,12 @@ namespace Nop.Plugin.Misc.LLT.Domain
         {
             StartDateTime = DateTime.UtcNow;
             IsTournamentMatch = true;
+            Deleted = false;
         }
 
         public bool IsTournamentMatch { get; set; }
+
+        public bool Deleted { get; set; }
 
         // Players
         public virtual Player Player1 { get; set; }

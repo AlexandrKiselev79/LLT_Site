@@ -14,6 +14,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             Property(m => m.Email);
             Property(m => m.Description);
             Property(m => m.CourtsAsJSON).HasColumnName("Courts");
+            Property(m => m.Deleted);
 
             HasRequired(r => r.Address);
         }

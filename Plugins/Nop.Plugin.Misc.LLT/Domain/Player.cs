@@ -8,6 +8,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public Player()
         {
             ForehandRight = true;
+            Deleted = false;
         }
 
         public string FirstName { get; set; }
@@ -25,5 +26,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public decimal Height { get; set; }
 
         public decimal Weight { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

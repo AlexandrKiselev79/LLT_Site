@@ -10,5 +10,6 @@
         public const string TieBreakResultTable = "LLTTieBreakResult";
         public const string TennisClubTable = "LLTTennisClub";
         public const string TournamentTable = "LLTTournament";
+        public const string TournamentMatchTable = "LLTTournamentMatch";
     }
 }

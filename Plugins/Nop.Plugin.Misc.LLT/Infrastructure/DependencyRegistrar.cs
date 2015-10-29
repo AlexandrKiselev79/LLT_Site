@@ -59,6 +59,11 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
                 .As<IRepository<Tournament>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<TournamentMatch>>()
+                .As<IRepository<TournamentMatch>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
         }
 
         public int Order { get; private set; }

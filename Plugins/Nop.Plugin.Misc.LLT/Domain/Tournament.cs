@@ -7,6 +7,11 @@ namespace Nop.Plugin.Misc.LLT.Domain
 {
     public class Tournament: BaseEntity
     {
+        public Tournament()
+        {
+            Deleted = false;
+        }
+
         public string Name { get; set; }
 
         public DateTime StartDate { get; set; }
@@ -25,6 +30,6 @@ namespace Nop.Plugin.Misc.LLT.Domain
             set { Rates = new Dictionary<int, int>();}
         }
 
-        public virtual List<Match> Matches { get; set; }
+        public bool Deleted { get; set; }
     }
 }

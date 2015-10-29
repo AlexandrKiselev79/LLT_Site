@@ -15,6 +15,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             Property(m => m.EndDate);
             Property(m => m.Type);
             Property(m => m.RatesAsJSON).HasColumnName("Rates");
+            Property(m => m.Deleted);
 
             HasMany(c => c.Clubs);
             HasMany(c => c.Matches);

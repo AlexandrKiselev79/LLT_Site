@@ -6,6 +6,11 @@ namespace Nop.Plugin.Misc.LLT.Domain
 {
     public class TennisClub: BaseEntity
     {
+        public TennisClub()
+        {
+            Deleted = false;
+        }
+
         public string Name { get; set; }
 
         public Address Address { get; set; }
@@ -21,5 +26,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
             get { return string.Empty; }
             set { Courts = new Dictionary<CourtType, int>();}
         }
+
+        public bool Deleted { get; set; }
     }
 }

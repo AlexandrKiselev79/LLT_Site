@@ -21,6 +21,8 @@ namespace Nop.Plugin.Misc.LLT.Data
             HasRequired(r => r.Club);
             Property(m => m.CourtNumber);
             Property(m => m.StartDateTime);
+
+            Property(m => m.Deleted);
         }
     }
 }

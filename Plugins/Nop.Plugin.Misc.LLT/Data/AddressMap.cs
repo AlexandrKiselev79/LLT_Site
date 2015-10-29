@@ -16,6 +16,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             Property(m => m.Line2);
             Property(m => m.ZipCode);
             Property(m => m.Phone);
+            Property(m => m.Deleted);
         }
     }
 }
