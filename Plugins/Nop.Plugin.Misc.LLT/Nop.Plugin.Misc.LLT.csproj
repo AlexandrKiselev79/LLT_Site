@@ -87,9 +87,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstracts\IAddressService.cs" />
+    <Compile Include="Abstracts\IChallengeService.cs" />
     <Compile Include="Abstracts\IPlayerService.cs" />
+    <Compile Include="Abstracts\ITennisClubService.cs" />
+    <Compile Include="Abstracts\ITournamentMatchService.cs" />
+    <Compile Include="Abstracts\ITournamentService.cs" />
     <Compile Include="Controllers\LLTCatalogcontroller.cs" />
     <Compile Include="Controllers\LLTHomeController.cs" />
+    <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Data\AddressMap.cs" />
     <Compile Include="Data\LLTObjectContext.cs" />
     <Compile Include="Data\MatchMap.cs" />
@@ -100,6 +106,7 @@
     <Compile Include="Data\TennisClubMap.cs" />
     <Compile Include="Data\TieBreakResultMap.cs" />
     <Compile Include="Data\TournamentMap.cs" />
+    <Compile Include="Data\TournamentMatchMap.cs" />
     <Compile Include="Domain\Address.cs" />
     <Compile Include="Domain\Match.cs" />
     <Compile Include="Domain\SetResult.cs" />
@@ -108,15 +115,24 @@
     <Compile Include="Domain\TieBreakResult.cs" />
     <Compile Include="Domain\Tournament.cs" />
     <Compile Include="Domain\PlayerResult.cs" />
+    <Compile Include="Domain\TournamentMatch.cs" />
     <Compile Include="Enums\CourtType.cs" />
     <Compile Include="Enums\TournamentType.cs" />
     <Compile Include="Infrastructure\CustomViewEngine.cs" />
     <Compile Include="Infrastructure\DependencyRegistrar.cs" />
     <Compile Include="Infrastructure\EfStartUpTask.cs" />
     <Compile Include="LLTPlugin.cs" />
+    <Compile Include="Models\Head2HeadModel.cs" />
+    <Compile Include="Models\PlayerListModel.cs" />
+    <Compile Include="Models\TournamentMatchModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteProvider.cs" />
+    <Compile Include="Service\AddressService.cs" />
+    <Compile Include="Service\ChallengeService.cs" />
     <Compile Include="Service\PlayerService.cs" />
+    <Compile Include="Service\TennisClubService.cs" />
+    <Compile Include="Service\TournamentMatchService.cs" />
+    <Compile Include="Service\TournamentService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Description.txt">
