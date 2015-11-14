@@ -6,6 +6,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using Nop.Core;
 using Nop.Core.Infrastructure;
 using Nop.Data;
+using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Services.Logging;
 
 namespace Nop.Plugin.Misc.LLT.Data
@@ -26,6 +27,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             modelBuilder.Configurations.Add(new PlayerResultMap());
             modelBuilder.Configurations.Add(new TieBreakResultMap());
             modelBuilder.Configurations.Add(new TournamentMap());
+            modelBuilder.Configurations.Add(new TournamentClubMap());
             modelBuilder.Configurations.Add(new TournamentMatchMap());
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             base.OnModelCreating(modelBuilder);

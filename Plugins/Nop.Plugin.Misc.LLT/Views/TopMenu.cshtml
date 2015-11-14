@@ -4,7 +4,14 @@
 <ul class="top-menu">
     @foreach (var topic in Model.Topics)
     {
-        <li><a href="@Url.RouteUrl("Topic", new { SeName = topic.SeName })">@topic.Name</a></li>
+        if (!string.IsNullOrEmpty(topic.SeName))
+        {
+            <li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
+        }
+        else
+        {
+            <li><a href="@Url.RouteUrl("HomePage")">@topic.Name</a></li>
+        }
     }
     @Html.Widget("header_menu_after")
 </ul>

@@ -2,10 +2,10 @@
 
 namespace Nop.Plugin.Misc.LLT.Models
 {
-    public class TournamentMatchModel
+    public class TournamentSingleMatch
     {
         public Match Match { get; set; }
 
-        
+        public Tournament Tournament { get; set; }
     }
 }

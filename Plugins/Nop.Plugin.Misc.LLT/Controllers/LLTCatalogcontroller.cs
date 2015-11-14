@@ -15,50 +15,61 @@ namespace Nop.Plugin.Misc.LLT.Controllers
                 {
                     new TopMenuModel.TopMenuTopicModel
                     {
-                        Id = 1,
-                        Name = "News",
-                        SeName = "News"
+                        Id = 2,
+                        Name = "Главная"
                     },
                     new TopMenuModel.TopMenuTopicModel
                     {
                         Id = 2,
-                        Name = "Regulations",
+                        Name = "Новости",
+                        //SeName = "News"
+                    },
+                    new TopMenuModel.TopMenuTopicModel
+                    {
+                        Id = 3,
+                        Name = "Регламент",
                         SeName = "Regulations"
                     },
                     new TopMenuModel.TopMenuTopicModel
                     {
-                        Id = 2,
-                        Name = "Tournaments",
+                        Id = 4,
+                        Name = "Рейтинг",
+                        SeName = "Rating"
+                    },
+                    new TopMenuModel.TopMenuTopicModel
+                    {
+                        Id = 5,
+                        Name = "Игроки",
+                        SeName = "Players",
+                    },
+                    new TopMenuModel.TopMenuTopicModel
+                    {
+                        Id = 6,
+                        Name = "Head 2 Head",
+                        SeName = "Head2Head"
+                    },
+                    new TopMenuModel.TopMenuTopicModel
+                    {
+                        Id = 7,
+                        Name = "Турниры",
                         SeName = "Tournaments"
                     },
                     new TopMenuModel.TopMenuTopicModel
                     {
-                        Id = 2,
-                        Name = "Players",
-                        SeName = "Players"
+                        Id = 8,
+                        Name = "Теннисные клубы",
+                        SeName = "Clubs"
                     },
-                    new TopMenuModel.TopMenuTopicModel
-                    {
-                        Id = 2,
-                        Name = "Ratings",
-                        SeName = "Ratings"
-                    },
-                    new TopMenuModel.TopMenuTopicModel
-                    {
-                        Id = 2,
-                        Name = "Courts",
-                        SeName = "Courts"
-                    },
-                    new TopMenuModel.TopMenuTopicModel
-                    {
-                        Id = 2,
-                        Name = "Shop",
-                        SeName = "Shop"
-                    }
+                    //new TopMenuModel.TopMenuTopicModel
+                    //{
+                    //    Id = 9,
+                    //    Name = "Shop",
+                    //    SeName = "Shop"
+                    //}
                 }
             };
 
-            return View(topicModel);
+            return View("~/Plugins/Misc.LLT/Views/TopMenu.cshtml", topicModel);
         }
     }
 }

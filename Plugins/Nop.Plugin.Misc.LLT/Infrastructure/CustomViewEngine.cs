@@ -6,8 +6,8 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
     {
         public CustomViewEngine()
         {
-            ViewLocationFormats = new[] { "~/Plugins/Misc.LLT/Views/{0}.cshtml" };
-            PartialViewLocationFormats = new[] { "~/Plugins/Misc.LLT/Views/{0}.cshtml" };
+            ViewLocationFormats = new[] { "~/Plugins/Misc.LLT/Views/{0}.cshtml", "~/Plugins/Misc.LLT/Views/{1}/{0}.cshtml" };
+            PartialViewLocationFormats = new[] { "~/Plugins/Misc.LLT/Views/{0}.cshtml", "~/Plugins/Misc.LLT/Views/{1}/{0}.cshtml" };
         }
     }
 }

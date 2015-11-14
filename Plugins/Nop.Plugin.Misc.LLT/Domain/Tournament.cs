@@ -10,6 +10,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public Tournament()
         {
             Deleted = false;
+            Clubs = new List<TournamentClub>();
         }
 
         public string Name { get; set; }
@@ -20,7 +21,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
 
         public TournamentType Type { get; set; }
 
-        public virtual List<TennisClub> Clubs { get; set; }
+        public List<TournamentClub> Clubs { get; set; }
 
         public Dictionary<int, int> Rates { get; set; }
 

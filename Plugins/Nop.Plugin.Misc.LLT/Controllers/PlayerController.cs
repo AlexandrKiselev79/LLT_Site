@@ -1,7 +1,6 @@
 ﻿using System.Web.Mvc;
 using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Models;
-using Nop.Plugin.Misc.LLT.Service;
 using Nop.Web.Framework.Controllers;
 
 namespace Nop.Plugin.Misc.LLT.Controllers
@@ -10,14 +9,16 @@ namespace Nop.Plugin.Misc.LLT.Controllers
     {
         private readonly IPlayerService _playerService;
         private readonly IChallengeService _challengeService;
+        private readonly ITournamentMatchService _tournamentMatchService;
 
-        public PlayerController(IPlayerService playerService, IChallengeService challengeService)
+        public PlayerController(IPlayerService playerService, IChallengeService challengeService, ITournamentMatchService tournamentMatchService)
         {
             _playerService = playerService;
             _challengeService = challengeService;
+            _tournamentMatchService = tournamentMatchService;
         }
 
-        public ActionResult Players()
+        public ActionResult List()
         {
             var model = new PlayerListModel
             {
@@ -25,6 +26,12 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             };
 
             return View(model);
+        }
+
+        public ActionResult Player(int playerId)
+        {
+            var player = _playerService.GetById(playerId);
+            return View(player);
         }
 
         public ActionResult Head2Head()
@@ -39,7 +46,8 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             {
                 Player1 = _playerService.GetById(player1Id),
                 Player2 = _playerService.GetById(player2Id),
-                ChallengeMatches = _challengeService.GetHead2Head(player1Id, player2Id)
+                ChallengeMatches = _challengeService.GetHead2Head(player1Id, player2Id),
+                TournamentMatches = _tournamentMatchService.GetHead2Head(player1Id, player2Id)
             };
 
             return View(model);

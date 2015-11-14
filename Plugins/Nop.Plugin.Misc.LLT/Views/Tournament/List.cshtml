@@ -1,0 +1,73 @@
+﻿@model Nop.Plugin.Misc.LLT.Models.TournamentListModel
+
+@{
+    Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            Турниры
+        </div>
+    </div>
+    if (Model.Tournaments.Count > 0)
+    {
+        <table width="100%">
+            <tr>
+                <td>
+                    Название
+                </td>
+                <td>
+                    Дата начала
+                </td>
+                <td>
+                    Дата окончания
+                </td>
+                <td>
+                    Тип турнира
+                </td>
+                <td>
+                    Теннисные клубы
+                </td>
+            </tr>
+
+            @foreach (var item in Model.Tournaments)
+            {
+                <tr>
+                    <td>
+                        @Html.Label(item.Name)
+                    </td>
+                    <td>
+                        @Html.Label(item.StartDate.ToString())
+                    </td>
+                    <td>
+                        @Html.Label(item.EndDate.ToString())
+                    </td>
+                    <td>
+                        @Html.Label(item.Type.ToString())
+                    </td>
+                    <td>
+                        @if (item.Clubs.Any())
+                        {
+                            var clubCount = 0;
+                            foreach (var club in item.Clubs)
+                            {
+                                var clubName = club.Club.Name;
+
+                                if (clubCount > 0)
+                                {
+                                    clubName = ", " + clubName;
+                                }
+                                <a href="@Url.RouteUrl("Plugin.Misc.LLT.ViewClub", new {Id = club.Id})">@clubName</a>
+                                clubCount++;
+                            }
+                        }
+                    </td>
+                </tr>
+            }           
+        </table>
+    }
+}

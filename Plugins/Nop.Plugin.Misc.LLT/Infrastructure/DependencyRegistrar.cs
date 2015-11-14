@@ -4,8 +4,10 @@ using Nop.Core.Data;
 using Nop.Core.Infrastructure;
 using Nop.Core.Infrastructure.DependencyManagement;
 using Nop.Data;
+using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Data;
 using Nop.Plugin.Misc.LLT.Domain;
+using Nop.Plugin.Misc.LLT.Service;
 using Nop.Web.Framework.Mvc;
 
 namespace Nop.Plugin.Misc.LLT.Infrastructure
@@ -60,10 +62,20 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<EfRepository<TournamentClub>>()
+                .As<IRepository<TournamentClub>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<EfRepository<TournamentMatch>>()
                 .As<IRepository<TournamentMatch>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<PlayerService>().As<IPlayerService>().InstancePerLifetimeScope();
+            builder.RegisterType<TournamentService>().As<ITournamentService>().InstancePerLifetimeScope();
+            builder.RegisterType<ChallengeService>().As<IChallengeService>().InstancePerLifetimeScope();
+            builder.RegisterType<TournamentMatchService>().As<ITournamentMatchService>().InstancePerLifetimeScope();
         }
 
         public int Order { get; private set; }

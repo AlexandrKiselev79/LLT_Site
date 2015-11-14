@@ -1,0 +1,65 @@
+﻿@model Nop.Plugin.Misc.LLT.Models.PlayerListModel
+
+@{
+    Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            Игроки
+        </div>
+    </div>
+    if (Model.Players.Count > 0)
+    {
+        <table width="100%">
+            <tr>
+                <td>
+                    Имя
+                </td>
+                <td>
+                    Фамилия
+                </td>
+                <td>
+                    Город
+                </td>
+                <td>
+                    Дата рождения
+                </td>
+                <td>
+                    Рост
+                </td>
+                <td>
+                    Вес
+                </td>
+            </tr>
+
+            @foreach (var item in Model.Players)
+            {
+                <tr>
+                    <td>
+                        @Html.Label(item.FirstName)
+                    </td>
+                    <td>
+                        @Html.Label(item.LastName)
+                    </td>
+                    <td>
+                        @Html.Label(item.City)
+                    </td>
+                    <td>
+                        @Html.Label(item.DateOfBirth.ToString())
+                    </td>
+                    <td>
+                        @Html.Label(item.Height.ToString("#.##"))
+                    </td>
+                    <td>
+                        @Html.Label(item.Weight.ToString("#.##"))
+                    </td>
+                </tr>
+            }           
+        </table>
+    }
+}

@@ -16,6 +16,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             Property(m => m.DateOfBirth);
             Property(m => m.City);
             Property(m => m.ForehandRight);
+            Property(m => m.Gender);
             Property(m => m.Height);
             Property(m => m.Weight);
             Property(m => m.Deleted);

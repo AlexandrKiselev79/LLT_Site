@@ -1,5 +1,6 @@
 ﻿using System;
 using Nop.Core;
+using Nop.Plugin.Misc.LLT.Enums;
 
 namespace Nop.Plugin.Misc.LLT.Domain
 {
@@ -9,6 +10,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
         {
             ForehandRight = true;
             Deleted = false;
+            Gender = GenderType.Man;
         }
 
         public string FirstName { get; set; }
@@ -22,6 +24,8 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public string City { get; set; }
 
         public bool ForehandRight { get; set; }
+
+        public GenderType Gender { get; set; }
 
         public decimal Height { get; set; }
 

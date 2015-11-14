@@ -1,0 +1,20 @@
+﻿@{
+    Layout = "~/Views/Shared/_Root.Head.cshtml";
+}
+
+<div class="master-wrapper-page">
+    <div class="header-menu">
+        @Html.Action("TopMenu", "LLTCatalog")
+    </div>
+</div>
+
+@RenderBody()
+
+<div class="footer" style="position: fixed; bottom: 0">
+    <div class="footer-powered-by" style="position: fixed; bottom: 0">
+        Powered by <a href="http://www.nopcommerce.com/">nopCommerce</a>
+        @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
+        Find more info here http://www.nopcommerce.com/copyrightremoval.aspx*@
+    </div>
+</div>
+
