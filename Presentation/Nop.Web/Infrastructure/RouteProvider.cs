@@ -12,10 +12,14 @@ namespace Nop.Web.Infrastructure
             //We reordered our routes so the most used ones are on top. It can improve performance.
 
             //home page
-            routes.MapLocalizedRoute("HomePage",
-                            "",
-                            new { controller = "Home", action = "Index" },
-                            new[] { "Nop.Web.Controllers" });
+            var route = routes["HomePage"] as LocalizedRoute;
+            if (route == null)
+            {
+                routes.MapLocalizedRoute("HomePage",
+                    "",
+                    new {controller = "Home", action = "Index"},
+                    new[] {"Nop.Web.Controllers"});
+            }
 
             //widgets
             //we have this route for performance optimization because named routes are MUCH faster than usual Html.Action(...)

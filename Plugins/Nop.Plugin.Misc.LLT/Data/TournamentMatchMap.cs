@@ -11,7 +11,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             HasKey(m => m.Id);
 
             HasRequired(r => r.Tournament);
-            HasMany(m => m.Matches);
+            HasRequired(m => m.Match);
         }
     }
 }

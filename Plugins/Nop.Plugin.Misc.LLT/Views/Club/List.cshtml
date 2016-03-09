@@ -1,3 +1,42 @@
-﻿@{
+﻿@model Nop.Plugin.Misc.LLT.Models.TennisClub.TennisClubListModel
+
+@{
     Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            Теннисные клубы
+        </div>
+    </div>
+    <br/><br/>
+    if (Model.Clubs.Count > 0)
+    {
+        <table width="100%">
+            <tr>
+                <td>
+                    Название
+                </td>
+                <td>
+                    Адрес
+                </td>
+            </tr>
+
+            @foreach (var item in Model.Clubs)
+            {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("Club", "Club", new {clubId = item.Id})">@item.Name</a>
+                    </td>
+                    <td>
+                       @* @Html.Label(item.ShortAddressString)*@
+                    </td>
+                </tr>
+            }           
+        </table>
+    }
 }

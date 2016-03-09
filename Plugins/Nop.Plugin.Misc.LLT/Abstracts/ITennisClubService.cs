@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Nop.Plugin.Misc.LLT.Domain;
+using Nop.Plugin.Misc.LLT.Models.TennisClub;
 
 namespace Nop.Plugin.Misc.LLT.Abstracts
 {
@@ -9,7 +10,7 @@ namespace Nop.Plugin.Misc.LLT.Abstracts
         void Update(TennisClub club);
         void Delete(TennisClub club);
 
-        TennisClub GetById(int clubId);
-        List<TennisClub> GetAll();
+        TennisClubModel GetById(int clubId);
+        List<TennisClubModel> GetAll();
     }
 }

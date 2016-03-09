@@ -13,7 +13,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
 
         public string Name { get; set; }
 
-        public Address Address { get; set; }
+        public virtual Address Address { get; set; }
 
         public string Email { get; set; }
 

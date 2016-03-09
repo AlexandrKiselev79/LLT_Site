@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Nop.Core;
+﻿using Nop.Core;
 
 namespace Nop.Plugin.Misc.LLT.Domain
 {
@@ -7,6 +6,6 @@ namespace Nop.Plugin.Misc.LLT.Domain
     {
         public Tournament Tournament { get; set; }
 
-        public List<Match> Matches { get; set; }
+        public Match Match { get; set; }
     }
 }

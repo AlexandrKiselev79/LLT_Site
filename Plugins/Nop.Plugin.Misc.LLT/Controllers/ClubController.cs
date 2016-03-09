@@ -1,23 +1,32 @@
 ﻿using System.Web.Mvc;
+using Nop.Plugin.Misc.LLT.Abstracts;
+using Nop.Plugin.Misc.LLT.Models.TennisClub;
 using Nop.Web.Framework.Controllers;
 
 namespace Nop.Plugin.Misc.LLT.Controllers
 {
     public class ClubController : BasePluginController
     {
-        public ClubController()
+        private readonly ITennisClubService _tennisClubService;
+
+        public ClubController(ITennisClubService tennisClubService)
         {
-            
+            _tennisClubService = tennisClubService;
         }
 
         public ActionResult List()
         {
-            return View();
+            var model = new TennisClubListModel
+            {
+                Clubs = _tennisClubService.GetAll()
+            };
+            return View(model);
         }
 
-        public ActionResult ClubItem()
+        public ActionResult Club(int clubId)
         {
-            return View();
+            var model = _tennisClubService.GetById(clubId);
+            return View(model);
         }
     }
 }

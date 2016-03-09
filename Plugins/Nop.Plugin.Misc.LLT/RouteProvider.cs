@@ -35,12 +35,6 @@ namespace Nop.Plugin.Misc.LLT
                 new { controller = "Club", action = "List" },
                 new[] { CONTROLLERS_NAMESPACE });
 
-            routes.MapRoute("Plugin.Misc.LLT.ViewClub",
-                "Club/{Id}",
-                new { controller = "Club", action = "Item"},
-                new { Id = @"\d+"},
-                new[] { CONTROLLERS_NAMESPACE });
-
             routes.MapRoute("Plugin.Misc.LLT.ViewPlayers",
                 "Players/",
                 new { controller = "Player", action = "List"},
@@ -66,7 +60,7 @@ namespace Nop.Plugin.Misc.LLT
 
             //LLT home page
             UpdateRoute(routes, "HomePage", "", "LLTHome", "Index", CONTROLLERS_NAMESPACE);
-            UpdateRoute(routes, "News", "", "LLTNews", "List", CONTROLLERS_NAMESPACE);
+            //UpdateRoute(routes, "News", "", "LLTNews", "List", CONTROLLERS_NAMESPACE);
             //UpdateRoute(routes, "NewsItem", "", "LLTNews", "NewsItem", CONTROLLERS_NAMESPACE);
         }
 

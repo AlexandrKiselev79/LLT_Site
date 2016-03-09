@@ -1,4 +1,5 @@
-﻿@model Nop.Plugin.Misc.LLT.Models.PlayerListModel
+﻿@using Nop.Plugin.Misc.LLT.Service
+@model Nop.Plugin.Misc.LLT.Models.Player.PlayerListModel
 
 @{
     Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
@@ -13,27 +14,19 @@
             Игроки
         </div>
     </div>
+    <br/><br/>
     if (Model.Players.Count > 0)
     {
-        <table width="100%">
+        <table>
             <tr>
                 <td>
-                    Имя
-                </td>
-                <td>
-                    Фамилия
+                    Полное имя
                 </td>
                 <td>
                     Город
                 </td>
                 <td>
-                    Дата рождения
-                </td>
-                <td>
-                    Рост
-                </td>
-                <td>
-                    Вес
+                    Пол
                 </td>
             </tr>
 
@@ -41,22 +34,13 @@
             {
                 <tr>
                     <td>
-                        @Html.Label(item.FirstName)
-                    </td>
-                    <td>
-                        @Html.Label(item.LastName)
+                        <a href="@Url.Action("Player", "Player", new {playerId = item.Id})">@item.FullName</a>
                     </td>
                     <td>
                         @Html.Label(item.City)
                     </td>
                     <td>
-                        @Html.Label(item.DateOfBirth.ToString())
-                    </td>
-                    <td>
-                        @Html.Label(item.Height.ToString("#.##"))
-                    </td>
-                    <td>
-                        @Html.Label(item.Weight.ToString("#.##"))
+                        @Html.Label(EnumService.GenderTypeString(item.Gender))
                     </td>
                 </tr>
             }           

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Nop.Core.Data;
 using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Domain;
+using Nop.Plugin.Misc.LLT.Models.TennisClub;
 
 namespace Nop.Plugin.Misc.LLT.Service
 {
@@ -31,14 +33,14 @@ namespace Nop.Plugin.Misc.LLT.Service
             _tennisClubRepository.Update(club);
         }
 
-        public TennisClub GetById(int clubId)
+        public TennisClubModel GetById(int clubId)
         {
-            return _tennisClubRepository.GetById(clubId);
+            return Mapper.Map<TennisClub, TennisClubModel>(_tennisClubRepository.GetById(clubId));
         }
 
-        public List<TennisClub> GetAll()
+        public List<TennisClubModel> GetAll()
         {
-            return _tennisClubRepository.Table.ToList();
+            return _tennisClubRepository.Table.Select(Mapper.Map<TennisClub, TennisClubModel>).ToList();
         }
     }
 }

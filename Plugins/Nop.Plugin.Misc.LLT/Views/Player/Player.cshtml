@@ -1,0 +1,94 @@
+﻿@using Nop.Plugin.Misc.LLT.Service
+@model Nop.Plugin.Misc.LLT.Models.Player.PlayerDetailsModel
+
+@{
+    Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <a href="@Url.RouteUrl("Plugin.Misc.LLT.ViewPlayers")">Вернуться к списку игроков</a>
+        </div>
+    </div>
+    <br/><br/>
+    <table>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            @Html.Label(@Model.GeneralInfo.FullName)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Рост: @Html.Label(@Model.GeneralInfo.HeightString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Вес: @Html.Label(@Model.GeneralInfo.WeightString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Вес: @Html.Label(@Model.GeneralInfo.WeightString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Форхенд: @Html.Label(@Model.GeneralInfo.ForehandRightString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Город: @Html.Label(@Model.GeneralInfo.City)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Дата рождения: @Html.Label(@Model.GeneralInfo.DateOfBirthString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Пол: @Html.Label(EnumService.GenderTypeString(@Model.GeneralInfo.Gender))
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                Фото
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Планируемые матчи
+                <br/>
+                <br/>
+                @*@if (@Model.PlannedMatches.Any())
+                {
+                    <table>
+                        @foreach (var match in @Model.PlannedMatches)
+                        {
+                            <tr>
+                                <td>
+                                    @match.
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }*@
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Сыгранные матчи
+            </td>
+        </tr>
+    </table>
+}

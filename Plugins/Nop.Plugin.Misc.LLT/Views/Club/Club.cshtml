@@ -1,0 +1,53 @@
+﻿@model Nop.Plugin.Misc.LLT.Models.TennisClub.TennisClubModel
+
+@{
+    Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <a href="@Url.RouteUrl("Plugin.Misc.LLT.ViewClubs")">Вернуться к списку клубов</a>
+        </div>
+    </div>
+    <br/><br/>
+    <table>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            @Html.Label(@Model.Name)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Адрес: @*@Html.Label(@Model.ShortAddressString)*@
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Почта: @Html.Label(@Model.Email)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Описание: @Html.Label(@Model.Description)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Корты: @Html.Label(@Model.CourtsString)
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                Фото
+            </td>
+        </tr>
+    </table>
+}

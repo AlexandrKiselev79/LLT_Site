@@ -38,6 +38,15 @@
       <HintPath>..\..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="AutoMapper, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -49,12 +58,14 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.4.5.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Web" />
@@ -65,9 +76,11 @@
     </Reference>
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -111,6 +124,7 @@
     <Compile Include="Controllers\LLTCatalogcontroller.cs" />
     <Compile Include="Controllers\LLTHomeController.cs" />
     <Compile Include="Controllers\LLTNewsController.cs" />
+    <Compile Include="Controllers\PlayerAdminController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\TournamentController.cs" />
     <Compile Include="Data\AddressMap.cs" />
@@ -137,19 +151,31 @@
     <Compile Include="Domain\TournamentMatch.cs" />
     <Compile Include="Enums\CourtType.cs" />
     <Compile Include="Enums\GenderType.cs" />
+    <Compile Include="Enums\PlayerLevel.cs" />
     <Compile Include="Enums\TournamentType.cs" />
+    <Compile Include="Extensions\MappingExtensions.cs" />
+    <Compile Include="Infrastructure\AutoMapperStartUpTask.cs" />
     <Compile Include="Infrastructure\CustomViewEngine.cs" />
     <Compile Include="Infrastructure\DependencyRegistrar.cs" />
     <Compile Include="Infrastructure\EfStartUpTask.cs" />
     <Compile Include="LLTPlugin.cs" />
     <Compile Include="Models\Head2HeadModel.cs" />
-    <Compile Include="Models\PlayerListModel.cs" />
-    <Compile Include="Models\TournamentListModel.cs" />
-    <Compile Include="Models\TournamentSingleMatch.cs" />
+    <Compile Include="Models\Match\MatchModel.cs" />
+    <Compile Include="Models\Match\SetResultModel.cs" />
+    <Compile Include="Models\Player\PlayerDetailsModel.cs" />
+    <Compile Include="Models\Player\PlayerListModel.cs" />
+    <Compile Include="Models\Player\PlayerModel.cs" />
+    <Compile Include="Models\TennisClub\TennisClubListModel.cs" />
+    <Compile Include="Models\TennisClub\TennisClubModel.cs" />
+    <Compile Include="Models\Tournament\TournamentListModel.cs" />
+    <Compile Include="Models\Tournament\TournamentSingleMatchModel.cs" />
+    <Compile Include="Models\Tournament\TournamentDetailsModel.cs" />
+    <Compile Include="Models\Tournament\TournamentModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouteProvider.cs" />
     <Compile Include="Service\AddressService.cs" />
     <Compile Include="Service\ChallengeService.cs" />
+    <Compile Include="Service\EnumService.cs" />
     <Compile Include="Service\PlayerService.cs" />
     <Compile Include="Service\TennisClubService.cs" />
     <Compile Include="Service\TournamentMatchService.cs" />
@@ -186,6 +212,10 @@
       <Project>{75fd4163-333c-4dd5-854d-2ef294e45d94}</Project>
       <Name>Nop.Web.Framework</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Presentation\Nop.Web\Administration\Nop.Admin.csproj">
+      <Project>{152C761A-DD2E-4C1F-AF89-DFB2547A3BCA}</Project>
+      <Name>Nop.Admin</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Presentation\Nop.Web\Nop.Web.csproj">
       <Project>{4f1f649c-1020-45be-a487-f416d9297ff3}</Project>
@@ -242,8 +272,19 @@
     <Content Include="Views\Club\List.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\Player\Player.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Tournament\Tournament.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Club\Club.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Player\AdminList.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

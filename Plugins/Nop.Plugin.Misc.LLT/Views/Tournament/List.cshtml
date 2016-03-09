@@ -1,4 +1,5 @@
-﻿@model Nop.Plugin.Misc.LLT.Models.TournamentListModel
+﻿@using Nop.Plugin.Misc.LLT.Service
+@model Nop.Plugin.Misc.LLT.Models.Tournament.TournamentListModel
 
 @{
     Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
@@ -13,6 +14,7 @@
             Турниры
         </div>
     </div>
+    <br/><br/>
     if (Model.Tournaments.Count > 0)
     {
         <table width="100%">
@@ -24,13 +26,7 @@
                     Дата начала
                 </td>
                 <td>
-                    Дата окончания
-                </td>
-                <td>
                     Тип турнира
-                </td>
-                <td>
-                    Теннисные клубы
                 </td>
             </tr>
 
@@ -38,33 +34,13 @@
             {
                 <tr>
                     <td>
-                        @Html.Label(item.Name)
+                        <a href="@Url.Action("Tournament", "Tournament", new {tournamentId = item.Id})">@item.Name</a>
                     </td>
                     <td>
-                        @Html.Label(item.StartDate.ToString())
+                        @Html.Label(item.StartDateString)
                     </td>
                     <td>
-                        @Html.Label(item.EndDate.ToString())
-                    </td>
-                    <td>
-                        @Html.Label(item.Type.ToString())
-                    </td>
-                    <td>
-                        @if (item.Clubs.Any())
-                        {
-                            var clubCount = 0;
-                            foreach (var club in item.Clubs)
-                            {
-                                var clubName = club.Club.Name;
-
-                                if (clubCount > 0)
-                                {
-                                    clubName = ", " + clubName;
-                                }
-                                <a href="@Url.RouteUrl("Plugin.Misc.LLT.ViewClub", new {Id = club.Id})">@clubName</a>
-                                clubCount++;
-                            }
-                        }
+                        @Html.Label(EnumService.TournamentTypeString(item.Type))
                     </td>
                 </tr>
             }           

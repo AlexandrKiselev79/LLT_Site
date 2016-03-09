@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Nop.Plugin.Misc.LLT.Domain;
+using Nop.Plugin.Misc.LLT.Models.Tournament;
 
 namespace Nop.Plugin.Misc.LLT.Abstracts
 {
@@ -10,8 +11,9 @@ namespace Nop.Plugin.Misc.LLT.Abstracts
         void Update(Tournament tournament);
         void Delete(Tournament tournament);
 
-        Tournament GetById(int tournamentId);
-        List<Tournament> GetAll();
-        List<Tournament> GetAllInPeriod(DateTime startDate, DateTime endDate);
+        TournamentModel GetById(int tournamentId);
+        TournamentDetailsModel GetDetailsById(int tournamentId);
+        List<TournamentModel> GetAll();
+        List<TournamentModel> GetAllInPeriod(DateTime startDate, DateTime endDate);
     }
 }

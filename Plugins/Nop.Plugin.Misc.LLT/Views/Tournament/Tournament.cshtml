@@ -1,0 +1,84 @@
+﻿@using Nop.Plugin.Misc.LLT.Service
+@model Nop.Plugin.Misc.LLT.Models.Tournament.TournamentDetailsModel
+
+@{
+    Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <a href="@Url.RouteUrl("Plugin.Misc.LLT.ViewTournaments")">Вернуться к списку турниров</a>
+        </div>
+    </div>
+    <br/><br/>
+    <table>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            @Html.Label(@Model.GeneralInfo.Name)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Дата начала: @Html.Label(@Model.GeneralInfo.StartDateString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Дата окончания: @Html.Label(@Model.GeneralInfo.EndDateString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Тип: @Html.Label(EnumService.TournamentTypeString(@Model.GeneralInfo.Type))
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                Фото
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Теннисные клубы
+                <br/>
+                <br/>
+                @if (@Model.GeneralInfo.Clubs.Any())
+                {
+                    <table>
+                        @foreach (var club in @Model.GeneralInfo.Clubs)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Club", "Club", new  {clubId = club.Id})">@club.Club.Name</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Планируемые матчи
+                <br/>
+                <br/>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Сыгранные матчи
+                <br/>
+                <br/>
+            </td>
+        </tr>
+    </table>
+}

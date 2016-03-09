@@ -20,6 +20,8 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
         {
             this.RegisterPluginDataContext<LLTObjectContext>(builder, CONTEXT_NAME);
 
+            #region Repositories
+
             builder.RegisterType<EfRepository<Player>>()
                 .As<IRepository<Player>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
@@ -34,9 +36,7 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
                 .As<IRepository<Match>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
                 .InstancePerLifetimeScope();
-
-
-
+            
             builder.RegisterType<EfRepository<Address>>()
                 .As<IRepository<Address>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
@@ -72,10 +72,17 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
                 .InstancePerLifetimeScope();
 
+            #endregion
+
+            #region Services
+
             builder.RegisterType<PlayerService>().As<IPlayerService>().InstancePerLifetimeScope();
             builder.RegisterType<TournamentService>().As<ITournamentService>().InstancePerLifetimeScope();
             builder.RegisterType<ChallengeService>().As<IChallengeService>().InstancePerLifetimeScope();
             builder.RegisterType<TournamentMatchService>().As<ITournamentMatchService>().InstancePerLifetimeScope();
+            builder.RegisterType<TennisClubService>().As<ITennisClubService>().InstancePerLifetimeScope();
+
+            #endregion
         }
 
         public int Order { get; private set; }

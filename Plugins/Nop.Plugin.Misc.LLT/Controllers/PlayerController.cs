@@ -1,6 +1,11 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
+using AutoMapper;
 using Nop.Plugin.Misc.LLT.Abstracts;
+using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Models;
+using Nop.Plugin.Misc.LLT.Models.Match;
+using Nop.Plugin.Misc.LLT.Models.Player;
 using Nop.Web.Framework.Controllers;
 
 namespace Nop.Plugin.Misc.LLT.Controllers
@@ -30,7 +35,7 @@ namespace Nop.Plugin.Misc.LLT.Controllers
 
         public ActionResult Player(int playerId)
         {
-            var player = _playerService.GetById(playerId);
+            var player = _playerService.GetDetailsById(playerId);
             return View(player);
         }
 
@@ -44,9 +49,9 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         {
             var model = new Head2HeadModel
             {
-                Player1 = _playerService.GetById(player1Id),
-                Player2 = _playerService.GetById(player2Id),
-                ChallengeMatches = _challengeService.GetHead2Head(player1Id, player2Id),
+                Player1 = _playerService.GetDetailsById(player1Id),
+                Player2 = _playerService.GetDetailsById(player2Id),
+                ChallengeMatches = _challengeService.GetHead2Head(player1Id, player2Id).Select(Mapper.Map<Match, MatchModel>).ToList(),
                 TournamentMatches = _tournamentMatchService.GetHead2Head(player1Id, player2Id)
             };
 

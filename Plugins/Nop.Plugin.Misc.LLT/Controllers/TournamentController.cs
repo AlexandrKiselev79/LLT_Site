@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Models;
+using Nop.Plugin.Misc.LLT.Models.Tournament;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Security;
 
@@ -26,13 +27,13 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             {
                 Tournaments = _tournamentService.GetAll()
             };
-            //return View("~/Plugins/Misc.LLT/Views/Tournaments.cshtml", model);
             return View(model);
         }
 
-        public ActionResult Item(int tournamentId)
+        public ActionResult Tournament(int tournamentId)
         {
-            return View();
+            var model = _tournamentService.GetDetailsById(tournamentId);
+            return View(model);
         }
     }
 }

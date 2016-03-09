@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Nop.Core.Data;
 using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Domain;
+using Nop.Plugin.Misc.LLT.Models.Match;
+using Nop.Plugin.Misc.LLT.Models.Tournament;
 
 namespace Nop.Plugin.Misc.LLT.Service
 {
@@ -11,11 +14,14 @@ namespace Nop.Plugin.Misc.LLT.Service
     {
         private readonly IRepository<Tournament> _tournamentRepository;
         private readonly IRepository<TournamentClub> _tournamentClubsRepository;
+        private readonly IRepository<TournamentMatch> _tournamentMatchRepository;
 
-        public TournamentService(IRepository<Tournament> tournamentRepository, IRepository<TournamentClub> tournamentClubsRepository)
+        public TournamentService(IRepository<Tournament> tournamentRepository, IRepository<TournamentClub> tournamentClubsRepository,
+            IRepository<Match> matchRepository, IRepository<TournamentMatch> tournamentMatchRepository)
         {
             _tournamentRepository = tournamentRepository;
             _tournamentClubsRepository = tournamentClubsRepository;
+            _tournamentMatchRepository = tournamentMatchRepository;
         }
 
         public void Create(Tournament tournament)
@@ -52,30 +58,48 @@ namespace Nop.Plugin.Misc.LLT.Service
             }
         }
 
-        public Tournament GetById(int tournamentId)
+        public TournamentModel GetById(int tournamentId)
         {
-            var tournament = _tournamentRepository.GetById(tournamentId);
+            var tournament = Mapper.Map<Tournament, TournamentModel>(_tournamentRepository.GetById(tournamentId));
             GetTournamentClubs(tournament);
             return tournament;
         }
 
-        public List<Tournament> GetAll()
+        public TournamentDetailsModel GetDetailsById(int tournamentId)
         {
-            var tournaments =  _tournamentRepository.Table.ToList();
+            var matches = _tournamentMatchRepository.Table.Where(m => m.Tournament.Id == tournamentId).Select(tm => tm.Match).ToList();
+            var details = new TournamentDetailsModel
+            {
+                GeneralInfo = Mapper.Map<Tournament, TournamentModel>(_tournamentRepository.GetById(tournamentId)),
+                PlayedMatches = matches.Where(m => m.SetResults != null && m.SetResults.Any()).Select(Mapper.Map<Match, MatchModel>).ToList(),
+                PlannedMatches = matches.Where(m => m.SetResults == null || !m.SetResults.Any()).Select(Mapper.Map<Match, MatchModel>).ToList()
+            };
+            GetTournamentClubs(details.GeneralInfo);
+
+            return details;
+        }
+
+        public List<TournamentModel> GetAll()
+        {
+            var tournaments =  _tournamentRepository.Table.Select(Mapper.Map<Tournament, TournamentModel>).ToList();
             foreach (var tournament in tournaments)
             {
                 GetTournamentClubs(tournament);
             }
-
             return tournaments;
         }
 
-        public List<Tournament> GetAllInPeriod(DateTime startDate, DateTime endDate)
+        public List<TournamentModel> GetAllInPeriod(DateTime startDate, DateTime endDate)
         {
-            return _tournamentRepository.Table.Where(t => t.StartDate <= endDate || t.EndDate >= startDate).ToList();
+            var tournaments = _tournamentRepository.Table.Where(t => t.StartDate <= endDate || t.EndDate >= startDate).Select(Mapper.Map<Tournament, TournamentModel>).ToList();
+            foreach (var tournament in tournaments)
+            {
+                GetTournamentClubs(tournament);
+            }
+            return tournaments;
         }
 
-        private void GetTournamentClubs(Tournament tournament)
+        private void GetTournamentClubs(TournamentModel tournament)
         {
             tournament.Clubs = _tournamentClubsRepository.Table.Where(tc => tc.Tournament.Id == tournament.Id).ToList();
         }

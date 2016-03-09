@@ -12,17 +12,17 @@ namespace Nop.Plugin.Misc.LLT.Domain
             Deleted = false;
             Clubs = new List<TournamentClub>();
         }
-
+        // Имя
         public string Name { get; set; }
-
+        // Дата начала
         public DateTime StartDate { get; set; }
-
+        // Дата окончания
         public DateTime EndDate { get; set; }
-
+        // Тип
         public TournamentType Type { get; set; }
-
+        // Места проведения
         public List<TournamentClub> Clubs { get; set; }
-
+        // Рейтинги за занятые места
         public Dictionary<int, int> Rates { get; set; }
 
         public string RatesAsJSON
@@ -30,7 +30,7 @@ namespace Nop.Plugin.Misc.LLT.Domain
             get { return string.Empty; }
             set { Rates = new Dictionary<int, int>();}
         }
-
+        // Удален
         public bool Deleted { get; set; }
     }
 }
