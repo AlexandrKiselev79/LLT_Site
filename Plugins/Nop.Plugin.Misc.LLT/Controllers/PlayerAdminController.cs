@@ -1,11 +1,13 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using Nop.Admin.Controllers;
 using Nop.Plugin.Misc.LLT.Abstracts;
-using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Extensions;
 using Nop.Plugin.Misc.LLT.Models.Player;
 using Nop.Services.Security;
+using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
+using Nop.Web.Framework.Kendoui;
 
 namespace Nop.Plugin.Misc.LLT.Controllers
 {
@@ -33,12 +35,23 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult List(PlayerListModel model, DataSourceRequest command)
+        {
+            var players = _playerService.GetAll(model.SearchLevel, model.SearchFullName, model.SearchCity);
+
+            var gridModel = new DataSourceResult
+            {
+                Data = players.PagedForCommand(command).Select(x => x),
+                Total = players.Count
+            };
+
+            return Json(gridModel);
+        }
+
         //create
         public ActionResult Create()
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageDiscounts))
-                return AccessDeniedView();
-
             var model = new PlayerModel();
             return View(model);
         }
@@ -46,40 +59,35 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
         public ActionResult Create(PlayerModel model, bool continueEditing)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageDiscounts))
-                return AccessDeniedView();
-
-            if (ModelState.IsValid)
-            {
-                var player = model.ToEntity();
-                _playerService.Add(player);
-                return continueEditing ? RedirectToAction("Edit", new { id = player.Id }) : RedirectToAction("List");
-            }
-
-            return View(model);
+            var player = model.ToEntity();
+            _playerService.Add(player);
+            return continueEditing ? RedirectToAction("Edit", new { id = player.Id }) : RedirectToAction("List");
         }
-
+            
         //edit
         public ActionResult Edit(int id)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageDiscounts))
-                return AccessDeniedView();
+            var player = _playerService.GetById(id);
+            if(player == null)
+                return RedirectToAction("List");
 
-            return View();
+            var playerModel = player.ToModel();
+            return View(playerModel);
         }
 
         [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-        public ActionResult Edit(bool continueEditing)
+        public ActionResult Edit(PlayerModel model,bool continueEditing)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageDiscounts))
-                return AccessDeniedView();
+            var player = _playerService.GetById(model.Id);
+            if (player == null)
+                return RedirectToAction("List");
+
+            player = model.ToEntity();
+            _playerService.Update(player);
 
             if (continueEditing)
             {
-                //selected tab
-                SaveSelectedTabIndex();
-
-                return RedirectToAction("Edit", new {id = 1}); //discount.Id });
+                return RedirectToAction("Edit", new {id = model.Id });
             }
             return RedirectToAction("List");
         }
@@ -88,9 +96,7 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageDiscounts))
-                return AccessDeniedView();
-            
+           
             return RedirectToAction("List");
         }
     }

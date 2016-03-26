@@ -12,6 +12,7 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
         public void Execute()
         {
             Mapper.CreateMap<Domain.Player, PlayerModel>();
+            Mapper.CreateMap<PlayerModel, Domain.Player>();
             Mapper.CreateMap<Domain.Match, MatchModel>();
             Mapper.CreateMap<Domain.SetResult, SetResultModel>();
             Mapper.CreateMap<Domain.Tournament, TournamentModel>();

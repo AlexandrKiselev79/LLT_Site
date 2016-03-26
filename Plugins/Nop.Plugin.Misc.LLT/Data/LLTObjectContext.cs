@@ -15,7 +15,10 @@ namespace Nop.Plugin.Misc.LLT.Data
     {
         private ILogger _logger;
 
-        public LLTObjectContext(string nameOrConnectionString) : base(nameOrConnectionString) { }
+        public LLTObjectContext(string nameOrConnectionString) : base(nameOrConnectionString)
+        {
+            AutoDetectChangesEnabled = true;
+        }
         
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

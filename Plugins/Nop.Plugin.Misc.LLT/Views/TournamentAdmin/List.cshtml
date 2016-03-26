@@ -1,36 +1,61 @@
-﻿@using Nop.Core.Infrastructure
-@using Nop.Plugin.Misc.LLT.Service
-@model Nop.Plugin.Misc.LLT.Models.Player.PlayerListModel
-
+﻿@using Nop.Plugin.Misc.LLT.Enums
+@using Nop.Core.Infrastructure
+@model Nop.Plugin.Misc.LLT.Models.Tournament.TournamentListModel
 @{
-    Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
+    Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+    
     var defaultGridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
-}
 
-@using (Html.BeginForm())
-{
-    
-    @Html.AntiForgeryToken()
-    <div class="section-header">
-        <div class="title">
-            Игроки
-        </div>
+    //page title
+    ViewBag.Title = "Список турниров";
+}
+@Html.AntiForgeryToken()
+<div class="section-header">
+    <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
+        Игроки
     </div>
-    <br/><br/>
-    <table>
-            <tr>
-                <td>
-                    <div id="players-grid"></div>
+    <div class="options">
+        <a href="@Url.Action("Create")" class="k-button">@T("Admin.Common.AddNew")</a>
+    </div>
+</div>
+<table width="100%">
+    <tr>
+        <td class="adminTitle">
+            Название:
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.SearchName)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            Тип:
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.SearchType, new SelectList(Enum.GetValues(typeof(TournamentType))))
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <input type="button" id="search-tournaments" class="k-button" value="@T("Admin.Common.Search")" />
+        </td>
+    </tr>
+</table>
+<table class="adminContent">
+    <tr>
+        <td>
+            <div id="players-grid"></div>
 
             <script>
                 $(document).ready(function () {
-                    $("#players-grid").kendoGrid({
+                    $("#tournaments-grid").kendoGrid({
                         dataSource: {
                             type: "json",
                             transport: {
                                 read: {
-                                    url: "@Html.Raw(Url.Action("List", "Player"))",
+                                    url: "@Html.Raw(Url.Action("List", "TournamentAdmin"))",
                                     type: "POST",
                                     dataType: "json",
                                     data: additionalData
@@ -62,29 +87,26 @@
                         scrollable: false,
                         columns: [
                             {
-                                field: "FirstName",
-                                title: "Имя",
+                                field: "Name",
+                                title: "Название",
                                 width: 150
                             }, {
-                                field: "LastName",
-                                title: "Фамилия",
+                                field: "Type",
+                                title: "Тип",
                                 width: 150
                             }, {
-                                field: "DateOfBirthString",
-                                title: "Дата рождения",
+                                field: "StartDateString",
+                                title: "Дата начала",
                                 width: 150
                             }, {
-                                field: "Country",
-                                title: "Страна",
+                                field: "EndDate",
+                                title: "Дата окончания",
                                 width: 150
                             }, {
-                                field: "City",
-                                title: "Город",
-                                width: 150
-                            }, {
-                                field: "Level",
-                                title: "Уровень",
-                                width: 150
+                                field: "Id",
+                                title: "@T("Admin.Common.Edit")",
+                                width: 100,
+                                template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
                             }
                         ]
                     });
@@ -95,32 +117,32 @@
 
                 $(document).ready(function () {
 
-                    $('#search-players').click(function () {
-                        var grid = $('#players-grid').data('kendoGrid');
+                    $('#search-tournaments').click(function () {
+                        var grid = $('#tournaments-grid').data('kendoGrid');
                         grid.dataSource.page(1); //new search. Set page size to 1
                         //grid.dataSource.read(); we already loaded the grid above using "page" function
                         return false;
                     });
                 });
 
-                $("#@Html.FieldIdFor(model => model.SearchFullName)").keydown(function (event) {
+                $("#@Html.FieldIdFor(model => model.SearchName)").keydown(function (event) {
                     if (event.keyCode == 13) {
-                        $("#search-players").click();
+                        $("#search-tournaments").click();
                         return false;
                     }
                 });
 
-                $("#@Html.FieldIdFor(model => model.SearchLevel)").keydown(function (event) {
+                $("#@Html.FieldIdFor(model => model.SearchType)").keydown(function (event) {
                     if (event.keyCode == 13) {
-                        $("#search-players").click();
+                        $("#search-tournaments").click();
                         return false;
                     }
                 });
 
                 function additionalData() {
                     var data = {
-                        SearchFullName: $('#@Html.FieldIdFor(model => model.SearchFullName)').val(),
-                        SearchLevel: $('#@Html.FieldIdFor(model => model.SearchLevel)').val()
+                        SearchName: $('#@Html.FieldIdFor(model => model.SearchName)').val(),
+                        SearchType: $('#@Html.FieldIdFor(model => model.SearchType)').val()
                     };
                     addAntiForgeryToken(data);
                     return data;
@@ -128,6 +150,5 @@
 
 </script>
         </td>
-    </tr>    
-        </table>
-}
+    </tr>
+</table>

@@ -6,7 +6,9 @@ using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Models;
 using Nop.Plugin.Misc.LLT.Models.Match;
 using Nop.Plugin.Misc.LLT.Models.Player;
+using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
+using Nop.Web.Framework.Kendoui;
 
 namespace Nop.Plugin.Misc.LLT.Controllers
 {
@@ -25,12 +27,21 @@ namespace Nop.Plugin.Misc.LLT.Controllers
 
         public ActionResult List()
         {
-            var model = new PlayerListModel
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult List(PlayerListModel model, DataSourceRequest command)
+        {
+            var players = _playerService.GetAll(model.SearchLevel, model.SearchFullName);
+
+            var gridModel = new DataSourceResult
             {
-                Players = _playerService.GetAll()
+                Data = players.PagedForCommand(command).Select(x => x),
+                Total = players.Count
             };
 
-            return View(model);
+            return Json(gridModel);
         }
 
         public ActionResult Player(int playerId)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Nop.Plugin.Misc.LLT.Enums;
 
 namespace Nop.Plugin.Misc.LLT.Models.Player
@@ -28,7 +29,24 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
 
         public string DateOfBirthString
         {
-            get { return DateOfBirth.ToShortDateString(); }
+            get
+            {
+                var ci = new CultureInfo("ru-RU");
+                return DateOfBirth.ToString("dd MMMM yyyy", ci);
+            }
+        }
+
+        public string Country { get; set; }
+
+        public string CountryString
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Country))
+                    return string.Empty;
+
+                return Country;
+            }
         }
 
         public string City { get; set; }
@@ -57,6 +75,15 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
         }
 
         public DateTime PlayFrom { get; set; }
+
+        public string PlayFromString
+        {
+            get
+            {
+                var ci = new CultureInfo("ru-RU");
+                return PlayFrom.ToString("dd MMMM yyyy", ci);
+            }
+        }
 
         public PlayerLevel Level { get; set; }
     }

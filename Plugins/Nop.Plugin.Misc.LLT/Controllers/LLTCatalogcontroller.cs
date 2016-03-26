@@ -13,17 +13,17 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             {
                 Topics = new List<TopMenuModel.TopMenuTopicModel>
                 {
-                    new TopMenuModel.TopMenuTopicModel
-                    {
-                        Id = 2,
-                        Name = "Главная"
-                    },
-                    new TopMenuModel.TopMenuTopicModel
-                    {
-                        Id = 2,
-                        Name = "Новости",
-                        //SeName = "News"
-                    },
+                    //new TopMenuModel.TopMenuTopicModel
+                    //{
+                    //    Id = 2,
+                    //    Name = "Главная"
+                    //},
+                    //new TopMenuModel.TopMenuTopicModel
+                    //{
+                    //    Id = 2,
+                    //    Name = "Новости",
+                    //    //SeName = "News"
+                    //},
                     new TopMenuModel.TopMenuTopicModel
                     {
                         Id = 3,
@@ -42,12 +42,12 @@ namespace Nop.Plugin.Misc.LLT.Controllers
                         Name = "Игроки",
                         SeName = "Players",
                     },
-                    new TopMenuModel.TopMenuTopicModel
-                    {
-                        Id = 6,
-                        Name = "Head 2 Head",
-                        SeName = "Head2Head"
-                    },
+                    //new TopMenuModel.TopMenuTopicModel
+                    //{
+                    //    Id = 6,
+                    //    Name = "Head 2 Head",
+                    //    SeName = "Head2Head"
+                    //},
                     new TopMenuModel.TopMenuTopicModel
                     {
                         Id = 7,

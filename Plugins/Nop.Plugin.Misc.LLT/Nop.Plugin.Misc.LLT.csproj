@@ -126,6 +126,7 @@
     <Compile Include="Controllers\LLTNewsController.cs" />
     <Compile Include="Controllers\PlayerAdminController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
+    <Compile Include="Controllers\TournamentAdminController.cs" />
     <Compile Include="Controllers\TournamentController.cs" />
     <Compile Include="Data\AddressMap.cs" />
     <Compile Include="Data\LLTObjectContext.cs" />
@@ -216,6 +217,7 @@
     <ProjectReference Include="..\..\Presentation\Nop.Web\Administration\Nop.Admin.csproj">
       <Project>{152C761A-DD2E-4C1F-AF89-DFB2547A3BCA}</Project>
       <Name>Nop.Admin</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Presentation\Nop.Web\Nop.Web.csproj">
       <Project>{4f1f649c-1020-45be-a487-f416d9297ff3}</Project>
@@ -223,7 +225,9 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Admin\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -281,7 +285,22 @@
     <Content Include="Views\Club\Club.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Player\AdminList.cshtml" />
+    <Content Include="Views\TournamentAdmin\List.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\PlayerAdmin\_CreateOrUpdate.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\PlayerAdmin\Create.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\PlayerAdmin\Edit.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\PlayerAdmin\List.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\TournamentAdmin\_CreateOrUpdate.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />

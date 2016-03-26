@@ -14,6 +14,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             Property(m => m.LastName);
             Property(m => m.MiddleName);
             Property(m => m.DateOfBirth);
+            Property(m => m.Country);
             Property(m => m.City);
             Property(m => m.ForehandRight);
             Property(m => m.Gender);

@@ -36,7 +36,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Вес: @Html.Label(@Model.GeneralInfo.WeightString)
+                            Уровень: @Html.Label(@Model.GeneralInfo.Level.ToString())
                         </td>
                     </tr>
                     <tr>
@@ -46,7 +46,12 @@
                     </tr>
                     <tr>
                         <td>
-                            Город: @Html.Label(@Model.GeneralInfo.City)
+                            Играет с: @Html.Label(@Model.GeneralInfo.PlayFromString)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Место проживания: @Model.GeneralInfo.Country / @Model.GeneralInfo.City
                         </td>
                     </tr>
                     <tr>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Enums;
 
@@ -15,14 +16,22 @@ namespace Nop.Plugin.Misc.LLT.Models.Tournament
 
         public string StartDateString
         {
-            get { return StartDate.ToShortDateString(); }
+            get
+            {
+                var ci = new CultureInfo("ru-RU");
+                return StartDate.ToString("dd MMMM yyyy", ci);
+            }
         }
 
         public DateTime EndDate { get; set; }
 
         public string EndDateString
         {
-            get { return EndDate.ToShortDateString(); }
+            get
+            {
+                var ci = new CultureInfo("ru-RU");
+                return EndDate.ToString("dd MMMM yyyy", ci);
+            }
         }
 
         public TournamentType Type { get; set; }

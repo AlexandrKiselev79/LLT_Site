@@ -1,0 +1,22 @@
+﻿@model Nop.Plugin.Misc.LLT.Models.Player.PlayerModel
+@{
+    Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+    //page title
+    ViewBag.Title = "Редактировать";
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "player-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
+            @T("Admin.Promotions.Discounts.EditDiscountDetails") - @Model.FullName @Html.ActionLink("(вернуться к списку)", "List")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+            <span id="player-delete" class="k-button">@T("Admin.Common.Delete")</span>
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdate", Model)
+}

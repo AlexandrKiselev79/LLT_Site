@@ -20,6 +20,8 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public string MiddleName { get; set; }
         // Дата рождения
         public DateTime DateOfBirth { get; set; }
+        // Страна
+        public string Country { get; set; }
         // Город
         public string City { get; set; }
         // Правша-Левша
@@ -36,5 +38,22 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public PlayerLevel Level { get; set; }
         // Неактивен
         public bool Deleted { get; set; }
+
+        public void CopyFrom(Player player)
+        {
+            FirstName = player.FirstName;
+            LastName = player.LastName;
+            MiddleName = player.MiddleName;
+            DateOfBirth = player.DateOfBirth;
+            Country = player.Country;
+            City = player.City;
+            ForehandRight = player.ForehandRight;
+            Gender = player.Gender;
+            Height = player.Height;
+            Weight = player.Weight;
+            PlayFrom = player.PlayFrom;
+            Level = player.Level;
+            Deleted = player.Deleted;
+        }
     }
 }
