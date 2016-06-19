@@ -39,7 +39,12 @@ namespace Nop.Web.Framework.UI
             html.AppendTitleParts(part);
             return MvcHtmlString.Create(html.Encode(pageHeadBuilder.GenerateTitle(addDefaultTitle)));
         }
+        public static MvcHtmlString PageTitle(this HtmlHelper html)
+        {
+            var defaultTitle = "Любительская Лига Тенниса | ";
 
+            return MvcHtmlString.Create(defaultTitle + html.ViewContext.Controller.ViewData["PageTitle"]);
+        }
 
         /// <summary>
         /// Add meta description element to the <![CDATA[<head>]]>
