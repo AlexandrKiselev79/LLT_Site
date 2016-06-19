@@ -31,14 +31,6 @@
     </tr>
     <tr>
         <td class="adminTitle">
-            Город:
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.SearchCity)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
             Уровень:
         </td>
         <td class="adminData">
@@ -155,17 +147,9 @@
                     }
                 });
 
-                $("#@Html.FieldIdFor(model => model.SearchCity)").keydown(function (event) {
-                    if (event.keyCode == 13) {
-                        $("#search-players").click();
-                        return false;
-                    }
-                });
-
                 function additionalData() {
                     var data = {
                         SearchFullName: $('#@Html.FieldIdFor(model => model.SearchFullName)').val(),
-                        SearchCity: $('#@Html.FieldIdFor(model => model.SearchCity)').val(),
                         SearchLevel: $('#@Html.FieldIdFor(model => model.SearchLevel)').val()
                     };
                     addAntiForgeryToken(data);

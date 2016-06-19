@@ -1,11 +1,8 @@
-п»ї@using Nop.Core.Infrastructure
 @using Nop.Plugin.Misc.LLT.Service
 @model Nop.Plugin.Misc.LLT.Models.Player.PlayerListModel
 
 @{
     Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
-    var defaultGridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
-    var gridPageSizes = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
 }
 
 @using (Html.BeginForm())
@@ -14,120 +11,56 @@
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
-            РРіСЂРѕРєРё
+            <h1>Игроки</h1>
         </div>
     </div>
     <br/><br/>
-    <table>
+    if (Model.Players.Count > 0)
+    {
+        <div class="llt-players">
+            <table class="">
+            <thead>
             <tr>
-                <td>
-                    <div id="players-grid"></div>
-
-            <script>
-                $(document).ready(function () {
-                    $("#players-grid").kendoGrid({
-                        dataSource: {
-                            type: "json",
-                            transport: {
-                                read: {
-                                    url: "@Html.Raw(Url.Action("List", "Player"))",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: additionalData
-                                }
-                            },
-                            schema: {
-                                data: "Data",
-                                total: "Total",
-                                errors: "Errors"
-                            },
-                            error: function(e) {
-                                display_kendoui_grid_error(e);
-                                // Cancel the changes
-                                this.cancelChanges();
-                            },
-                            pageSize: @(defaultGridPageSize),
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
-                        },
-                        pageable: {
-                            refresh: true,
-                            pageSizes: [@(gridPageSizes)]
-                        },
-                        editable: {
-                            confirmation: false,
-                            mode: "inline"
-                        },
-                        scrollable: false,
-                        columns: [
-                            {
-                                field: "FirstName",
-                                title: "РРјСЏ",
-                                width: 150
-                            }, {
-                                field: "LastName",
-                                title: "Р¤Р°РјРёР»РёСЏ",
-                                width: 150
-                            }, {
-                                field: "DateOfBirthString",
-                                title: "Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ",
-                                width: 150
-                            }, {
-                                field: "Country",
-                                title: "РЎС‚СЂР°РЅР°",
-                                width: 150
-                            }, {
-                                field: "City",
-                                title: "Р“РѕСЂРѕРґ",
-                                width: 150
-                            }, {
-                                field: "Level",
-                                title: "РЈСЂРѕРІРµРЅСЊ",
-                                width: 150
-                            }
-                        ]
-                    });
-                });
-            </script>
-
-            <script type="text/javascript">
-
-                $(document).ready(function () {
-
-                    $('#search-players').click(function () {
-                        var grid = $('#players-grid').data('kendoGrid');
-                        grid.dataSource.page(1); //new search. Set page size to 1
-                        //grid.dataSource.read(); we already loaded the grid above using "page" function
-                        return false;
-                    });
-                });
-
-                $("#@Html.FieldIdFor(model => model.SearchFullName)").keydown(function (event) {
-                    if (event.keyCode == 13) {
-                        $("#search-players").click();
-                        return false;
-                    }
-                });
-
-                $("#@Html.FieldIdFor(model => model.SearchLevel)").keydown(function (event) {
-                    if (event.keyCode == 13) {
-                        $("#search-players").click();
-                        return false;
-                    }
-                });
-
-                function additionalData() {
-                    var data = {
-                        SearchFullName: $('#@Html.FieldIdFor(model => model.SearchFullName)').val(),
-                        SearchLevel: $('#@Html.FieldIdFor(model => model.SearchLevel)').val()
-                    };
-                    addAntiForgeryToken(data);
-                    return data;
-                }
-
-</script>
-        </td>
-    </tr>    
-        </table>
+                <th>
+                    Полное имя
+                </th>
+                <th>
+                    Уровень
+                </th>
+                <th>
+                    Страна
+                </th>
+                <th>
+                    Город
+                </th>
+                <th>
+                    Пол
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Players)
+            {
+                <tr>
+                    <td class="player-name">
+                        <a href="@Url.Action("Player", "Player", new {playerId = item.Id})">@item.FullName</a>
+                    </td>
+                    <td>
+                        @Html.Label(item.Level.ToString())
+                    </td>
+                    <td>
+                        @Html.Label(item.CountryString)
+                    </td>
+                    <td>
+                        @Html.Label(item.City)
+                    </td>
+                    <td>
+                        @Html.Label(EnumService.GenderTypeString(item.Gender))
+                    </td>
+                </tr>
+            }  
+            </tbody>
+            </table>         
+        </div>
+    }
 }
