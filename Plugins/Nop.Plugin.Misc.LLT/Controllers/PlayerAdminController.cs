@@ -4,7 +4,6 @@ using Nop.Admin.Controllers;
 using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Extensions;
 using Nop.Plugin.Misc.LLT.Models.Player;
-using Nop.Services.Security;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Kendoui;
@@ -14,13 +13,10 @@ namespace Nop.Plugin.Misc.LLT.Controllers
     [AdminAuthorize]
     public class PlayerAdminController: BaseAdminController
     {
-        private readonly IPermissionService _permissionService;
         private readonly IPlayerService _playerService;
 
-        public PlayerAdminController(IPermissionService permissionService,
-            IPlayerService playerService)
+        public PlayerAdminController(IPlayerService playerService)
         {
-            _permissionService = permissionService;
             _playerService = playerService;
         }
 

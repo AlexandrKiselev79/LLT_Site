@@ -46,7 +46,7 @@
 <table class="adminContent">
     <tr>
         <td>
-            <div id="players-grid"></div>
+            <div id="tournaments-grid"></div>
 
             <script>
                 $(document).ready(function () {
@@ -56,60 +56,60 @@
                             transport: {
                                 read: {
                                     url: "@Html.Raw(Url.Action("List", "TournamentAdmin"))",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: additionalData
-                                }
-                            },
-                            schema: {
-                                data: "Data",
-                                total: "Total",
-                                errors: "Errors"
-                            },
-                            error: function(e) {
-                                display_kendoui_grid_error(e);
-                                // Cancel the changes
-                                this.cancelChanges();
-                            },
-                            pageSize: @(defaultGridPageSize),
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
-                        },
-                        pageable: {
-                            refresh: true,
-                            pageSizes: [@(gridPageSizes)]
-                        },
-                        editable: {
-                            confirmation: false,
-                            mode: "inline"
-                        },
-                        scrollable: false,
-                        columns: [
-                            {
-                                field: "Name",
-                                title: "Название",
-                                width: 150
-                            }, {
-                                field: "Type",
-                                title: "Тип",
-                                width: 150
-                            }, {
-                                field: "StartDateString",
-                                title: "Дата начала",
-                                width: 150
-                            }, {
-                                field: "EndDate",
-                                title: "Дата окончания",
-                                width: 150
-                            }, {
-                                field: "Id",
-                                title: "@T("Admin.Common.Edit")",
-                                width: 100,
-                                template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                                type: "POST",
+                                dataType: "json",
+                                data: additionalData
                             }
-                        ]
-                    });
+                        },
+                        schema: {
+                            data: "Data",
+                            total: "Total",
+                            errors: "Errors"
+                        },
+                        error: function(e) {
+                            display_kendoui_grid_error(e);
+                            // Cancel the changes
+                            this.cancelChanges();
+                        },
+                        pageSize: @(defaultGridPageSize),
+                        serverPaging: true,
+                        serverFiltering: true,
+                        serverSorting: true
+                    },
+                        pageable: {
+                        refresh: true,
+                        pageSizes: [@(gridPageSizes)]
+                        },
+                    editable: {
+                        confirmation: false,
+                        mode: "inline"
+                    },
+                    scrollable: false,
+                    columns: [
+                        {
+                            field: "Name",
+                            title: "Название",
+                            width: 150
+                        },  {
+                            field: "TypeString",
+                            title: "Тип",
+                            width: 150
+                        }, {
+                            field: "StartDateString",
+                            title: "Дата начала",
+                            width: 150
+                        }, {
+                            field: "EndDateString",
+                            title: "Дата окончания",
+                            width: 150
+                        }, {
+                            field: "Id",
+                            title: "@T("Admin.Common.Edit")",
+                        width: 100,
+                    template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                }
+                ]
+                });
                 });
             </script>
 

@@ -1,21 +1,21 @@
-﻿@model Nop.Plugin.Misc.LLT.Models.Player.PlayerModel
+﻿@model Nop.Plugin.Misc.LLT.Models.Tournament.TournamentDetailsModel
 @{
     Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
     //page title
     ViewBag.Title = "Редактировать";
 }
-@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "player-form" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "tournament-form" }))
 {
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
         <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
-            Редактирование игрока - @Model.FullName @Html.ActionLink("(вернуться к списку)", "List")
+            Редактирование турнира - @Model.GeneralInfo.Name @Html.ActionLink("(вернуться к списку)", "List")
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
             <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
-            <span id="player-delete" class="k-button">@T("Admin.Common.Delete")</span>
+            <span id="tournament-delete" class="k-button">@T("Admin.Common.Delete")</span>
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)

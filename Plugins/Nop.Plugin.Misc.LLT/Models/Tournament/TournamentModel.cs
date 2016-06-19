@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Enums;
 
 namespace Nop.Plugin.Misc.LLT.Models.Tournament
@@ -36,7 +35,10 @@ namespace Nop.Plugin.Misc.LLT.Models.Tournament
 
         public TournamentType Type { get; set; }
 
-        public List<TournamentClub> Clubs { get; set; }
+        public string TypeString
+        {
+            get { return Type.ToString(); }
+        }
 
         public Dictionary<int, int> Rates { get; set; }
     }
