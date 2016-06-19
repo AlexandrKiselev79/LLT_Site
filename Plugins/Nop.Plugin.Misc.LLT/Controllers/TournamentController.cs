@@ -1,6 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using Nop.Plugin.Misc.LLT.Abstracts;
-using Nop.Plugin.Misc.LLT.Models;
+using Nop.Plugin.Misc.LLT.Extensions;
 using Nop.Plugin.Misc.LLT.Models.Tournament;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Security;
@@ -25,7 +26,7 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         {
             var model = new TournamentListModel
             {
-                Tournaments = _tournamentService.GetAll()
+                Tournaments = _tournamentService.GetAll().Select(x => x.ToModel()).ToList()
             };
             return View(model);
         }

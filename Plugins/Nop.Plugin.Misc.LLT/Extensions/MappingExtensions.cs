@@ -1,6 +1,7 @@
 ﻿using Nop.Admin.Extensions;
 using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Models.Player;
+using Nop.Plugin.Misc.LLT.Models.Tournament;
 
 namespace Nop.Plugin.Misc.LLT.Extensions
 {
@@ -14,6 +15,16 @@ namespace Nop.Plugin.Misc.LLT.Extensions
         public static Player ToEntity(this PlayerModel model)
         {
             return model.MapTo<PlayerModel, Player>();
+        }
+
+        public static TournamentModel ToModel(this Tournament entity)
+        {
+            return entity.MapTo<Tournament, TournamentModel>();
+        }
+
+        public static Tournament ToEntity(this TournamentModel model)
+        {
+            return model.MapTo<TournamentModel, Tournament>();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Nop.Plugin.Misc.LLT
 
         public void ManageSiteMap(SiteMapNode rootNode)
         {
-            var playerMenuItem = new SiteMapNode()
+            var lltMenuItem = new SiteMapNode()
             {
                 Title = "LLT",
                 Url = "/PlayerAdmin/List",
@@ -38,7 +38,7 @@ namespace Nop.Plugin.Misc.LLT
                 RouteValues = new RouteValueDictionary() { { "Area", "Admin" } }
             };
 
-            var rolesSponsorsMenuItem = new SiteMapNode()
+            var playersMenuUtem = new SiteMapNode()
             {
                 SystemName = "LLT",
                 Title = "Players",
@@ -46,7 +46,17 @@ namespace Nop.Plugin.Misc.LLT
                 Visible = true,
                 RouteValues = new RouteValueDictionary() { { "Area", "Admin" } }
             };
-            playerMenuItem.ChildNodes.Add(rolesSponsorsMenuItem);
+            lltMenuItem.ChildNodes.Add(playersMenuUtem);
+
+            var tournamentsMenuUtem = new SiteMapNode()
+            {
+                SystemName = "LLT",
+                Title = "Tournaments",
+                Url = "/TournamentAdmin/List",
+                Visible = true,
+                RouteValues = new RouteValueDictionary() { { "Area", "Admin" } }
+            };
+            lltMenuItem.ChildNodes.Add(tournamentsMenuUtem);
 
             //var excludedFromDefaultMenuItem = new SiteMapNode()
             //{
@@ -60,9 +70,9 @@ namespace Nop.Plugin.Misc.LLT
 
             var pluginNode = rootNode.ChildNodes.FirstOrDefault(x => x.SystemName == "Third party plugins");
             if (pluginNode != null)
-                pluginNode.ChildNodes.Add(playerMenuItem);
+                pluginNode.ChildNodes.Add(lltMenuItem);
             else
-                rootNode.ChildNodes.Add(playerMenuItem);
+                rootNode.ChildNodes.Add(lltMenuItem);
 
         }
 
