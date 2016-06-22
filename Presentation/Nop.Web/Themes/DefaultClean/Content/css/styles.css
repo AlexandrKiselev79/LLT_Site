@@ -6526,3 +6526,49 @@ pre {
 }
 
 }
+
+
+.main-content {
+	background-color: #f1f1f1;
+	    padding-top: 5px;
+}
+
+.main-content .container{
+	background-color: #fff;
+	max-width: 1360px;
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+
+.main-container {
+    border: 1px solid #c7c8c8;
+    min-height: 500px;
+    position: relative;
+    background-color: #fff;
+    padding: 30px;
+    border-top:0;
+}
+
+.llt-players thead th {
+	border-top: 1px solid #ececec;
+    padding: 5px 15px;
+    text-transform: uppercase;
+    background-color: #f8f8f8;
+}
+
+.llt-players td {
+	text-align: center;
+    vertical-align: middle;
+    padding: 15px 15px 10px;
+    border-left: 1px solid #ececec;
+    border-bottom: 1px solid #ececec;
+    color:#000;
+}
+
+.llt-players td:first-child {
+    border-left: none;
+}
+
+.llt-players .player-name a {
+	text-decoration: underline;
+}
