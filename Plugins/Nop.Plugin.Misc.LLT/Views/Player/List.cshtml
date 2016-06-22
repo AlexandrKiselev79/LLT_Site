@@ -1,4 +1,4 @@
-@using Nop.Plugin.Misc.LLT.Service
+п»ї@using Nop.Plugin.Misc.LLT.Service
 @model Nop.Plugin.Misc.LLT.Models.Player.PlayerListModel
 
 @{
@@ -11,7 +11,7 @@
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
-            <h1>Игроки</h1>
+            <h1>РРіСЂРѕРєРё</h1>
         </div>
     </div>
     <br/><br/>
@@ -22,19 +22,19 @@
             <thead>
             <tr>
                 <th>
-                    Полное имя
+                    РџРѕР»РЅРѕРµ РРјСЏ
                 </th>
                 <th>
-                    Уровень
+                    РЈСЂРѕРІРµРЅСЊ
                 </th>
                 <th>
-                    Страна
+                    РЎС‚СЂР°РЅР°
                 </th>
                 <th>
-                    Город
+                    Р“РѕСЂРѕРґ
                 </th>
                 <th>
-                    Пол
+                    РџРѕР»
                 </th>
             </tr>
             </thead>
@@ -52,7 +52,7 @@
                         @Html.Label(item.CountryString)
                     </td>
                     <td>
-                        @Html.Label(item.City)
+                        @Html.Label(item.CityString)
                     </td>
                     <td>
                         @Html.Label(EnumService.GenderTypeString(item.Gender))

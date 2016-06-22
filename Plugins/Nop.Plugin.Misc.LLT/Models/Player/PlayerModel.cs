@@ -51,6 +51,17 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
 
         public string City { get; set; }
 
+        public string CityString
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(City))
+                    return string.Empty;
+
+                return City;
+            }
+        }
+
         public bool ForehandRight { get; set; }
 
         public string ForehandRightString

@@ -9,6 +9,7 @@ using Nop.Plugin.Misc.LLT.Models.Player;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Kendoui;
+using Nop.Web.Infrastructure;
 
 namespace Nop.Plugin.Misc.LLT.Controllers
 {
@@ -23,11 +24,16 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             _playerService = playerService;
             _challengeService = challengeService;
             _tournamentMatchService = tournamentMatchService;
+
+            ViewData[Constants.ViewData.PageTitle] = Constants.Pages.PageTitlePlayers;
         }
 
         public ActionResult List()
         {
-            return View();
+            var model = new PlayerListModel() {
+                Players = _playerService.GetAll()
+            };
+            return View(model);
         }
 
         [HttpPost]

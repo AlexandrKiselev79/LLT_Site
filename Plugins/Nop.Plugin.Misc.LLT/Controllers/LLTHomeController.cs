@@ -2,6 +2,7 @@
 using Nop.Core.Data;
 using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Web.Framework.Controllers;
+using Nop.Web.Infrastructure;
 
 namespace Nop.Plugin.Misc.LLT.Controllers
 {

@@ -41,9 +41,7 @@ namespace Nop.Web.Framework.UI
         }
         public static MvcHtmlString PageTitle(this HtmlHelper html)
         {
-            var defaultTitle = "Любительская Лига Тенниса | ";
-
-            return MvcHtmlString.Create(defaultTitle + html.ViewContext.Controller.ViewData["PageTitle"]);
+            return MvcHtmlString.Create("Nop Commerce");
         }
 
         /// <summary>
