@@ -16,8 +16,10 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
             Mapper.CreateMap<Domain.Tournament, TournamentModel>();
             Mapper.CreateMap<TournamentModel, Domain.Tournament>();
             Mapper.CreateMap<Domain.Match, MatchModel>();
+            Mapper.CreateMap<MatchModel, Domain.Match>();
             Mapper.CreateMap<Domain.SetResult, SetResultModel>();
             Mapper.CreateMap<Domain.TennisClub, TennisClubModel>();
+            Mapper.CreateMap<TennisClubModel, Domain.TennisClub>();
         }
 
         public int Order

@@ -10,6 +10,8 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
         {
             Gender = GenderType.Man;
             ForehandRight = true;
+            DateOfBirth = new DateTime(1900, 1, 1);
+            PlayFrom = new DateTime(1900, 1, 1);
         }
 
         public int Id { get; set; }
@@ -97,5 +99,13 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
         }
 
         public PlayerLevel Level { get; set; }
+
+        public string LevelString
+        {
+            get
+            {
+                return Enum.GetName(typeof(PlayerLevel), Level);
+            }
+        }
     }
 }

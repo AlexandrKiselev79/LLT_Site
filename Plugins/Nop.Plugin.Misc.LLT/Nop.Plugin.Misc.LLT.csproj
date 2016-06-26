@@ -138,6 +138,7 @@
     <Compile Include="Data\TennisClubMap.cs" />
     <Compile Include="Data\TieBreakResultMap.cs" />
     <Compile Include="Data\TournamentMap.cs" />
+    <Compile Include="Data\TournamentPlayersMap.cs" />
     <Compile Include="Data\TournamentMatchMap.cs" />
     <Compile Include="Data\TournamentClubsMap.cs" />
     <Compile Include="Domain\Address.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Domain\Tournament.cs" />
     <Compile Include="Domain\PlayerResult.cs" />
     <Compile Include="Domain\TournamentClub.cs" />
+    <Compile Include="Domain\TournamentPlayer.cs" />
     <Compile Include="Domain\TournamentMatch.cs" />
     <Compile Include="Enums\CourtType.cs" />
     <Compile Include="Enums\GenderType.cs" />
@@ -304,6 +306,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\TournamentAdmin\Edit.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\TournamentAdmin\Create.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

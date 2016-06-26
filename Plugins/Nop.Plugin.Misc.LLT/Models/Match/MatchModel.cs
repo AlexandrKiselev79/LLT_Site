@@ -15,7 +15,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
         // Players
         public PlayerModel Player1 { get; set; }
         public PlayerModel Player2 { get; set; }
-
+        
         // Results
         public List<SetResultModel> SetResults { get; set; }
 

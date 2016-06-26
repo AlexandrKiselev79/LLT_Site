@@ -11,6 +11,8 @@ namespace Nop.Plugin.Misc.LLT.Domain
             ForehandRight = true;
             Deleted = false;
             Gender = GenderType.Man;
+            DateOfBirth = new DateTime(1900, 1, 1);
+            PlayFrom = new DateTime(1900, 1, 1);
         }
         // Имя
         public string FirstName { get; set; }

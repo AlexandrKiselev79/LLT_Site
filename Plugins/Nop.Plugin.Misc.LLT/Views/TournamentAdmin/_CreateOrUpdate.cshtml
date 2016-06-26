@@ -11,8 +11,6 @@
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.GeneralInfo.Id)
 
-
-
 <div id="tournament-edit">
     <ul>
         <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
@@ -51,9 +49,392 @@
             },
             select: tabstrip_on_tab_select
         });
-    });
-</script>
 
+        initPlayersGrid();
+        initMatchesGrid();
+    });
+
+    var lastRemovedMatchPlayers = {};
+    var lastRemovedMatchPlayerIndeces = {};
+
+    function levelDropDownEditor(container, options) {
+        $('<input required/>')
+            .appendTo(container)
+            .kendoDropDownList({
+                dataSource: playerLevels,
+                dataTextField: "Name",
+                dataValueField: "Id"
+            });
+    }
+
+    function playerDropDownEditor(container, options, dropDownId) {
+        $('<input id="' + dropDownId + '" required data-text-field="FullName" data-value-field="Id" data-bind="value:' + options.field + '"/>')
+        .appendTo(container)
+        .kendoDropDownList({
+            autoBind: false,
+            optionLabel: "Select player...",
+            dataSource: {
+                serverFiltering: true,
+                transport: {
+                    read: {
+                        url: '/Players',
+                        dataType: "json",
+                        type: "POST",
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total"
+                },
+                requestEnd: function(e) {
+                }
+            },
+            change: function(e) {
+                filterTournamentMatchPlayersList(e.sender.wrapper);
+            },
+            select: null,
+            dataBound: function(e) {
+
+                filterTournamentPlayersList(e.sender.wrapper);
+            },
+            open: null
+        });
+    }
+
+    function filterTournamentPlayersList($dropDownWrapper) {
+        if($dropDownWrapper.find('#tournamentPlayersList').length !== 1){
+            return;
+        }
+
+        var currentPlayers = $("#tournament-players-grid").data('kendoGrid').dataSource.data();
+        var listedPlayers = $('#tournamentPlayersList').data('kendoDropDownList').dataSource.data();
+
+        currentPlayers.forEach(function(currentPlayer) {
+            listedPlayers.forEach(function(listedPlayer) {
+                if (listedPlayer && currentPlayer.dirty === false && currentPlayer.Id && listedPlayer.Id === currentPlayer.Id) {
+                    listedPlayers.remove(listedPlayer);
+                }
+            });
+        });
+    }
+
+    function filterTournamentMatchPlayersList($dropDownWrapper) {
+        var currentListId = '';
+        if($dropDownWrapper.find('#tournamentMatchPlayer1List').length === 1){
+            currentListId = 'tournamentMatchPlayer1List';
+        }
+        else if($dropDownWrapper.find('#tournamentMatchPlayer2List').length === 1){
+            currentListId = 'tournamentMatchPlayer2List';
+        }
+
+        if (!currentListId) {
+            return;
+        }
+
+        var theOtherListId = currentListId === 'tournamentMatchPlayer1List' ? 'tournamentMatchPlayer2List' : 'tournamentMatchPlayer1List';
+        var theOtherList = $('#' + theOtherListId).data('kendoDropDownList');
+        var theOtherListPlayers = theOtherList.dataSource.data();
+
+        if (lastRemovedMatchPlayers[theOtherListId]) {
+            var index = lastRemovedMatchPlayerIndeces[theOtherListId] !== undefined ? lastRemovedMatchPlayerIndeces[theOtherListId] : 0;
+            theOtherListPlayers.splice(index, 0, lastRemovedMatchPlayers[theOtherListId]);
+        }
+
+        var selectedValue = $('#' + currentListId).data('kendoDropDownList')._selectedValue;
+        if (selectedValue.length === 0) {
+            return;
+        }
+
+        var selectedId = parseInt(selectedValue);
+        theOtherListPlayers.forEach(function(theOtherListPlayer, index) {
+            if (theOtherListPlayer && theOtherListPlayer.Id === selectedId) {
+                lastRemovedMatchPlayers[theOtherListId] = theOtherListPlayer;
+                lastRemovedMatchPlayerIndeces[theOtherListId] = index;
+                theOtherListPlayers.remove(theOtherListPlayer);
+            }
+        });
+    }
+
+    var playerLevels = [
+        @{
+            var levelValues = Enum.GetValues(typeof(PlayerLevel));
+        }
+
+        @for (int i = 0; i < levelValues.Length; i++)
+        {
+            var levelId = (int) levelValues.GetValue(i);
+            var levelName = Enum.GetName(typeof(PlayerLevel), levelId);
+            <text>
+                { Id: @(levelId), Name: "@(levelName)" },
+            </text>
+        }
+    ];
+
+    var tournamentPlayers = [
+        @for (int i = 0; i < Model.Players.Count; i++)
+        {
+            var player = Model.Players[i];
+            <text>
+                {
+                    Id: @(player.Id),
+                    Name: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(player.FullName)))"
+                }
+            </text>
+            if (i != Model.Players.Count - 1)
+            {
+                <text>,</text>
+            }
+        }
+    ];
+
+    function initPlayersGrid() {
+        $(document).ready(function() {
+            $("#tournament-players-grid").kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: {
+                            url: function(e) {
+                                return "@Html.Raw(Url.Action("PlayersList", "TournamentAdmin", new { tournamentId = Model.GeneralInfo.Id }))";
+                            },
+                            type: "POST",
+                            dataType: "json",
+                            data: addAntiForgeryToken
+                        },
+                        create: {
+                            url: function(player) {
+                                var url = "@Html.Raw(Url.Action("PlayerInsert", "TournamentAdmin", new { tournamentId = Model.GeneralInfo.Id }))" + '&playerId=' + player.Id;
+                                return url;
+                            },
+                            type: "POST",
+                            dataType: "json",
+                            data: addAntiForgeryToken
+                        },
+                        destroy: {
+                            url: function(player) {
+                                var url = "@Html.Raw(Url.Action("PlayerDelete", "TournamentAdmin", new { tournamentId = Model.GeneralInfo.Id }))" + '&playerId=' + player.Id;
+                                return url;
+                            },
+                            type: "POST",
+                            dataType: "json",
+                            data: addAntiForgeryToken
+                        }
+                    },
+                    schema: {
+                        data: "Data",
+                        total: "Total",
+                        errors: "Errors",
+                        model: {
+                            id: "Id",
+                            fields: {
+                                Id: { editable: true, type: "number" },
+                                FullName: { editable: true },
+                                LevelString: { editable: false },
+                            }
+                        }
+                    },
+                    requestEnd: function(e) {
+                        if (e.type == "create" || e.type == "update" || e.type == "destroy") {
+                            this.read();
+                        }
+                    },
+                    error: function(e) {
+                        display_kendoui_grid_error(e);
+                        // Cancel the changes
+                        this.cancelChanges();
+                    },
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true
+                },
+                pageable: {
+                    refresh: true,
+                    numeric: false,
+                    previousNext: false,
+                    info: false
+                },
+                toolbar: ["create"],
+                edit: function(e) {
+                    var a = 1;
+                },
+                save: function(e) {
+                    var a = 1;
+                },
+                cancel: function(e) {
+                    var a = 1;
+                },
+                dataBound: function(){
+                    $('#tournament-players-grid').find(".k-grid-edit").remove();
+                },
+                editable: "inline",
+                scrollable: false,
+                columns: [
+                    {
+                        field: "Id",
+                        title: "Игрок",
+                        editor: function(container, options) {
+                            playerDropDownEditor(container, options, 'tournamentPlayersList');
+                        },
+                        template: function(dataItem) {
+                            return kendo.htmlEncode(dataItem.FullName);
+                        },
+                        width: 200
+                    },
+                    {
+                        field: "LevelString",
+                        title: "Уровень",
+                        width: 200
+                    },
+                    {
+                        command: ["destroy", "edit"],
+                        width: 30
+                    }
+                ]
+            });
+        });
+    }
+
+    function initMatchesGrid() {
+        $("#tournament-matches-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Html.Raw(Url.Action("MatchesList", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    create: {
+                        url: function(match) {
+                            var url = "@Html.Raw(Url.Action("MatchInsert", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))" + '&player1Id=' + match.Player1 + '&player2Id=' + match.Player2 + '&result=' + match.MatchResultString;
+                            return url;
+                        },
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    update: {
+                        url: function(match) {
+                            var url = "@Html.Raw(Url.Action("MatchUpdate", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))"  + '&player1Id=' + match.Player1 + '&player2Id=' + match.Player2 + '&result=' + match.MatchResultString;
+                            return url;
+                        },
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    destroy: {
+                        url: "@Html.Raw(Url.Action("MatchDelete", "TournamentAdmin", new { tournamentId = Model.GeneralInfo.Id }))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors",
+                    model: {
+                        id: "Id",
+                        fields: {
+                            Id: { editable: false, type: "number" },
+                            Player1: { },
+                            Player2: { },
+                            MatchResultString: { editable: true },
+                        }
+                    }
+                },
+                requestEnd: function(e) {
+                    if (e.type == "create" || e.type == "update") {
+                        this.read();
+                    }
+                },
+                error: function(e) {
+                    //display_kendoui_grid_error(e);
+                    // Cancel the changes
+                    this.cancelChanges();
+                },
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            pageable: {
+                refresh: true,
+                numeric: false,
+                previousNext: false,
+                info: false
+            },
+            toolbar: ["create"],
+            edit: function(e) {
+                if (e.model.isNew()) {
+
+                }
+            },
+            cancel: function(e) {
+                var a = 1;
+            },
+            editable: {
+                confirmation: false,
+                mode: "inline"
+            },
+            scrollable: false,
+            columns: [
+                {
+                    field: "Id",
+                    title: "Матч",
+                    width: 0,
+                    attributes: {
+                        style: "display:none;"
+                    },
+                    headerAttributes: {
+                        style: "display:none;"
+                    }
+                },
+                {
+                    field: "Player1",
+                    title: "Игрок 1",
+                    editor: function(container, options) {
+                        playerDropDownEditor(container, options, 'tournamentMatchPlayer1List');
+                    },
+                    template: function(dataItem) {
+                        return kendo.htmlEncode(dataItem.Player1.FullName);
+                    },
+                    width: 120
+                },
+                {
+                    field: "Player2",
+                    title: "Игрок 2",
+                    editor: function(container, options) {
+                        playerDropDownEditor(container, options, 'tournamentMatchPlayer2List');
+                    },
+                    template: function(dataItem) {
+                        return kendo.htmlEncode(dataItem.Player2.FullName);
+                    },
+                    width: 120
+                },
+                {
+                    field: "MatchResultString",
+                    title: "Результат",
+                    width: 120
+                },
+                {
+                    command: [
+                        {
+                            name: "edit",
+                            text: "@T("Admin.Common.Create")"
+                        },
+                        {
+                            name: "destroy",
+                            text: "@T("Admin.Common.Delete")"
+                        }
+                    ],
+                    width: 100
+                }
+            ]
+        });
+    }
+
+</script>
 
 @*save selected tab index*@
 <input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
@@ -97,153 +478,34 @@
 }
 @helper TabPlayers()
 {
-    if (Model.GeneralInfo.Id > 0)
-    {
+if (Model.GeneralInfo.Id > 0)
+{
         <div id="tournament-players-grid"></div>
-        <script>
-            $(document).ready(function() {
-                $("#tournament-players-grid").kendoGrid({
-                    dataSource: {
-                        type: "json",
-                        transport: {
-                            read: {
-                                url: "@Html.Raw(Url.Action("PlayersList", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))",
-                                type: "POST",
-                                dataType: "json",
-                                data: addAntiForgeryToken
-                            },
-                            create: {
-                                url: "@Html.Raw(Url.Action("PlayerInsert", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))",
-                                type: "POST",
-                                dataType: "json",
-                                data: addAntiForgeryToken
-                            },
-                            destroy: {
-                                url: "@Html.Raw(Url.Action("PlayerDelete", "TournamentAdmin"))",
-                                type: "POST",
-                                dataType: "json",
-                                data: addAntiForgeryToken
-                            }
-                        },
-                        schema: {
-                            data: "Data",
-                            total: "Total",
-                            errors: "Errors",
-                            model: {
-                                id: "Id",
-                                fields: {
-                                    PlayerId: { editable: true, type: "number" }
-                                    Id: { editable: false, type: "number" }
-                                }
-                            }
-                        },
-                        requestEnd: function(e) {
-                            if (e.type == "create" || e.type == "update") {
-                                this.read();
-                            }
-                        },
-                        error: function(e) {
-                            display_kendoui_grid_error(e);
-                            // Cancel the changes
-                            this.cancelChanges();
-                        },
-                        serverPaging: true,
-                        serverFiltering: true,
-                        serverSorting: true
-                    },
-                    pageable: {
-                        refresh: true,
-                        numeric: false,
-                        previousNext: false,
-                        info: false
-                    },
-                    toolbar: ["create"],
-                    edit: function(e) {
-                        if (e.model.isNew()) {
-                            //little hack here
-                            //pre-select the first value of kendoui dropdownlist datasource
-                            //for some reasons (maybe, bug) it always sends 0
-                            //if no value has been selected (changed) in the dropdownlist
-                            if (allPlayers.length > 0) {
-                                e.model.PlayerId = allPlayers[0].Id;
-                            }
-                        }
-                    },
-                    editable: {
-                        confirmation: false,
-                        mode: "inline"
-                    },
-                    scrollable: false,
-                    columns: [
-                        {
-                            field: "Id",
-                            title: "Номер",
-                            width: 150
-                        },  {
-                            field: "FullName",
-                            title: "Полное имя",
-                            width: 150
-                        }, {
-                            field: "Level",
-                            title: "Уровень",
-                            width: 150
-                        },
-                        {
-                            command: [
-                                {
-                                    name: "destroy",
-                                    text: "@T("Admin.Common.Delete")"
-                                }
-                            ],
-                            width: 200
-                        }
-                    ]
-                });
-            });
-
-            //local datasource
-            var allPlayers = [
-                @for (int i = 0; i < Model.Players.Count; i++)
-            {
-                var player = Model.Players[i];
-                <text>
-            {
-                Id: @(player.Id),
-                Name: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(player.FullName)))"
-            }
-                </text>
-                if (i != Model.Players.Count - 1)
-                {
-                    <text>,</text>
-                }
-            }
-            ];
-        </script>
-    }
-    else
-    {
-        @T("Admin.Promotions.Discounts.Requirements.SaveBeforeEdit")
-    }
+}
+else
+{
+        @T("Admin.Tournament.SaveBeforeEdit")
+}
 }
 @helper TabMatches()
 {
-    if (Model.GeneralInfo.Id > 0)
-    {
-            
-    }
-    else
-    {
-        @T("Admin.Promotions.Discounts.Requirements.SaveBeforeEdit")
-    }
+if (Model.GeneralInfo.Id > 0)
+{
+        <div id="tournament-matches-grid"></div>
+}
+else
+{
+        @T("Admin.Tournament.SaveBeforeEdit")
+}
 }
 @helper TabResults()
 {
-    if (Model.GeneralInfo.Id > 0)
-    {
-        
-    }
-    else
-    {
-        @T("Admin.Promotions.Discounts.AppliedToProducts.SaveBeforeEdit")
-    }
+if (Model.GeneralInfo.Id > 0)
+{
+
+}
+else
+{
+        @T("Admin.Tournament.SaveBeforeEdit")
+}
 }

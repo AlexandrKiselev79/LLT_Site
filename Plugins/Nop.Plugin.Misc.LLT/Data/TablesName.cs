@@ -12,5 +12,6 @@
         public const string TournamentTable = "LLTTournament";
         public const string TournamentClubsTable = "LLTTournamentClubs";
         public const string TournamentMatchTable = "LLTTournamentMatch";
+        public const string TournamentPlayerTable = "LLTTournamentPlayer";
     }
 }

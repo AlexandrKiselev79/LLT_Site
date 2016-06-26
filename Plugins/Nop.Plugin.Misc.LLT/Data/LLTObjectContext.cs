@@ -32,6 +32,7 @@ namespace Nop.Plugin.Misc.LLT.Data
             modelBuilder.Configurations.Add(new TournamentMap());
             modelBuilder.Configurations.Add(new TournamentClubMap());
             modelBuilder.Configurations.Add(new TournamentMatchMap());
+            modelBuilder.Configurations.Add(new TournamentPlayersMap());
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             base.OnModelCreating(modelBuilder);
         }

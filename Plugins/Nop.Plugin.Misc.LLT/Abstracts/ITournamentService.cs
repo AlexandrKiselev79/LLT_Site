@@ -12,6 +12,14 @@ namespace Nop.Plugin.Misc.LLT.Abstracts
         void Update(Tournament tournament);
         void Delete(Tournament tournament);
 
+        void AddPlayer(Tournament tournament, Player player);
+        void UpdatePlayer(Tournament tournament, Player player);
+        void RemovePlayer(Tournament tournament, Player player);
+
+        void AddMatch(Tournament tournament, Match match);
+        void UpdateMatch(Tournament tournament, Match match);
+        void RemoveMatch(Tournament tournament, Match match);
+
         Tournament GetById(int tournamentId);
         TournamentDetailsModel GetDetailsById(int tournamentId);
         List<Tournament> GetAll();

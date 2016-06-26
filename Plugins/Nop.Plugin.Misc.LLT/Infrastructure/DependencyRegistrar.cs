@@ -72,6 +72,11 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<EfRepository<TournamentPlayer>>()
+                .As<IRepository<TournamentPlayer>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(CONTEXT_NAME))
+                .InstancePerLifetimeScope();
+
             #endregion
 
             #region Services
@@ -81,6 +86,7 @@ namespace Nop.Plugin.Misc.LLT.Infrastructure
             builder.RegisterType<ChallengeService>().As<IChallengeService>().InstancePerLifetimeScope();
             builder.RegisterType<TournamentMatchService>().As<ITournamentMatchService>().InstancePerLifetimeScope();
             builder.RegisterType<TennisClubService>().As<ITennisClubService>().InstancePerLifetimeScope();
+            builder.RegisterType<AddressService>().As<IAddressService>().InstancePerLifetimeScope();
 
             #endregion
         }

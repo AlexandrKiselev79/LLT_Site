@@ -14115,4 +14115,7 @@
   <LocaleResource Name="Wishlist.YourWishlistURL">
     <Value>Your wishlist URL for sharing</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Tournament.SaveBeforeEdit">
+    <Value>Сохраните турнир, чтобы редактировать игроков, матчи и результаты</Value>
+  </LocaleResource>
 </Language>
