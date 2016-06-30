@@ -5,7 +5,7 @@ using Nop.Plugin.Misc.LLT.Enums;
 
 namespace Nop.Plugin.Misc.LLT.Domain
 {
-    public class Tournament: BaseEntity
+    public class Tournament : BaseEntity
     {
         public Tournament()
         {
@@ -28,9 +28,20 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public string RatesAsJSON
         {
             get { return string.Empty; }
-            set { Rates = new Dictionary<int, int>();}
+            set { Rates = new Dictionary<int, int>(); }
         }
         // Удален
         public bool Deleted { get; set; }
+
+        internal void CopyFrom(Tournament tournament)
+        {
+            Name = tournament.Name;
+            StartDate = tournament.StartDate;
+            EndDate = tournament.EndDate;
+            Type = tournament.Type;
+            Clubs = tournament.Clubs;
+            Rates = tournament.Rates;
+            Deleted = tournament.Deleted;
+        }
     }
 }

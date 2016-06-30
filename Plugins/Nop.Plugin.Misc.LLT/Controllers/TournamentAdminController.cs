@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Nop.Admin.Controllers;
@@ -89,8 +91,8 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             if (tournament == null)
                 return RedirectToAction("List");
 
-            //tournament = model.ToEntity();
-            //_tournamentService.Update(tournament);
+            tournament = model.GeneralInfo.ToEntity();
+            _tournamentService.Update(tournament);
 
             if (continueEditing)
             {
@@ -166,25 +168,73 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             match.Club.Address = _addressService.GetById(2);
             match.Player1 = _playerService.GetById(player1Id.Value);
             match.Player2 = _playerService.GetById(player2Id.Value);
+            ParseMatchResult(match, result);
 
             _tournamentService.AddMatch(tournament, match);
             return Json(tournament);
         }
 
         [HttpPost]
-        public ActionResult MatchUpdate(int tournamentId, MatchModel match)
+        public ActionResult MatchUpdate(int tournamentId, int? matchId, int? player1Id, int? player2Id, string result)
         {
             var tournament = _tournamentService.GetById(tournamentId);
-            _tournamentService.UpdateMatch(tournament, match.ToEntity());
+            var match = _tournamentService.GetMatchById(tournamentId, matchId.Value);
+            match.Player1 = _playerService.GetById(player1Id.Value);
+            match.Player2 = _playerService.GetById(player2Id.Value);
+
+            ParseMatchResult(match, result);
+
+            _tournamentService.UpdateMatch(tournament, match);
             return Json(tournament);
         }
 
         [HttpPost]
-        public ActionResult MatchDelete(int tournamentId, MatchModel match)
+        public ActionResult MatchDelete(int tournamentId, int? matchId)
         {
             var tournament = _tournamentService.GetById(tournamentId);
-            _tournamentService.RemoveMatch(tournament, match.ToEntity());
+            var match = _tournamentService.GetMatchById(tournamentId, matchId.Value);
+            match.Deleted = true;
+
+            _tournamentService.UpdateMatch(tournament, match);
             return Json(tournament);
+        }
+
+        private void ParseMatchResult(Match match, string result)
+        {
+            var setResults = new List<SetResult>();
+            var sets = result.Split(' ');
+            for (var i = 0; i < sets.Length; i++)
+            {
+                var set = sets[i];
+
+                var setResult = new SetResult();
+                if (set.Contains('-') && set.Split(new[] { "-" }, StringSplitOptions.RemoveEmptyEntries).Length == 2)
+                {
+                    var isTieBreak = set.Contains('(') && set.Contains(')');
+
+                    setResult.Number = i + 1;
+                    setResult.Player1 = match.Player1;
+                    setResult.Player2 = match.Player2;
+                    setResult.Player1Games = int.Parse(set.Split('-')[0]);
+                    setResult.Player2Games = isTieBreak ? int.Parse(set.Split('-')[1].Split('(')[0]) : int.Parse(set.Split('-')[1]);
+
+                    if (isTieBreak)
+                    {
+                        var lostTieBreakScore = isTieBreak ? int.Parse(set.Split('(')[1].Replace(")", "")) : 0;
+                        var wonTieBreakScore = lostTieBreakScore < 6 ? 7 : lostTieBreakScore + 2;
+
+                        var player1WonSet = setResult.Player1Games > setResult.Player2Games;
+                        setResult.Player1TieBreak = player1WonSet ? wonTieBreakScore : lostTieBreakScore;
+                        setResult.Player2TieBreak = player1WonSet ? lostTieBreakScore : wonTieBreakScore;
+                    }
+                    setResults.Add(setResult);
+                }
+                else
+                {
+                    throw new ArgumentException("Set result has wrong format");
+                }
+            }
+            match.SetResults = setResults;
         }
     }
 }

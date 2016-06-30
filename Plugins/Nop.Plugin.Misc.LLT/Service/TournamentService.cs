@@ -35,7 +35,9 @@ namespace Nop.Plugin.Misc.LLT.Service
 
         public void Update(Tournament tournament)
         {
-            _tournamentRepository.Update(tournament);
+            var existingTournament = _tournamentRepository.GetById(tournament.Id);
+            existingTournament.CopyFrom(tournament);
+            _tournamentRepository.Update(existingTournament);
         }
 
         public void AddPlayer(Tournament tournament, Player player)
@@ -59,6 +61,11 @@ namespace Nop.Plugin.Misc.LLT.Service
         {
             var tournamentMatch = new TournamentMatch(tournament, match);
             _tournamentMatchRepository.Insert(tournamentMatch);
+        }
+
+        public Match GetMatchById(int tournamentId, int matchId) {
+            var match = _tournamentMatchRepository.Table.Where(tm => tm.Tournament.Id == tournamentId && tm.Match.Id == matchId).Select(a=>a.Match).First();
+            return match;
         }
 
         public void UpdateMatch(Tournament tournament, Match match)

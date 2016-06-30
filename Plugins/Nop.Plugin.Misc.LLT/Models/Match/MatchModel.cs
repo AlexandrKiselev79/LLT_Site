@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Nop.Plugin.Misc.LLT.Domain;
+using Nop.Plugin.Misc.LLT.Enums;
 using Nop.Plugin.Misc.LLT.Models.Player;
 using Nop.Plugin.Misc.LLT.Models.TennisClub;
 
@@ -15,7 +16,9 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
         // Players
         public PlayerModel Player1 { get; set; }
         public PlayerModel Player2 { get; set; }
-        
+
+        public MatchStage Stage { get; set; }
+
         // Results
         public List<SetResultModel> SetResults { get; set; }
 
@@ -26,16 +29,24 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
             foreach (var setResult in SetResults)
             {
                 result.Append(setResult.Player1.Id == playerId
-                    ? string.Format("{0} - {1} ", setResult.Player1Games, setResult.Player2Games)
-                    : string.Format("{0} - {1} ", setResult.Player2Games, setResult.Player1Games));
+                    ? string.Format("{0}-{1} ", setResult.Player1Games, setResult.Player2Games)
+                    : string.Format("{0}-{1} ", setResult.Player2Games, setResult.Player1Games));
             }
 
             if (TieBreakResult != null)
                 result.Append(TieBreakResult.Player1.Id == playerId
-                    ? string.Format("{0} - {1} ", TieBreakResult.Player1TieBreak, TieBreakResult.Player2TieBreak)
-                    : string.Format("{0} - {1} ", TieBreakResult.Player2TieBreak, TieBreakResult.Player1TieBreak));
+                    ? string.Format("{0}-{1} ", TieBreakResult.Player1TieBreak, TieBreakResult.Player2TieBreak)
+                    : string.Format("{0}-{1} ", TieBreakResult.Player2TieBreak, TieBreakResult.Player1TieBreak));
 
             return result.ToString();
+        }
+
+        public string MatchResultDisplay
+        {
+            get
+            {
+                return MatchResultString(Player1.Id);
+            }
         }
 
         public TieBreakResult TieBreakResult { get; set; }

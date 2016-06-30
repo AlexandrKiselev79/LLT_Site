@@ -3370,10 +3370,10 @@
     <Value>Preview</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Save">
-    <Value>Save</Value>
+    <Value>Сохранить</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.SaveContinue">
-    <Value>Save and Continue Edit</Value>
+    <Value>Сохранить и Продолжить редактирование</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Common.Search">
     <Value>Search</Value>

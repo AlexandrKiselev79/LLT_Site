@@ -71,6 +71,9 @@
                             // Cancel the changes
                             this.cancelChanges();
                         },
+                        requestEnd: function(e) {
+                            console.log('tournaments requestEnd');
+                        },
                         pageSize: @(defaultGridPageSize),
                         serverPaging: true,
                         serverFiltering: true,

@@ -17,6 +17,7 @@ namespace Nop.Plugin.Misc.LLT.Abstracts
         void RemovePlayer(Tournament tournament, Player player);
 
         void AddMatch(Tournament tournament, Match match);
+        Match GetMatchById(int tournamentId, int matchId);
         void UpdateMatch(Tournament tournament, Match match);
         void RemoveMatch(Tournament tournament, Match match);
 
