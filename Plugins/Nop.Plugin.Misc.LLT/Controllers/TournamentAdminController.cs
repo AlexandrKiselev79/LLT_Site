@@ -205,6 +205,11 @@ namespace Nop.Plugin.Misc.LLT.Controllers
 
         private void ParseMatchResult(Match match, string result)
         {
+            if (string.IsNullOrEmpty(result))
+            {
+                return;
+            }
+
             var setResults = new List<SetResult>();
 
             var sets = result.Trim().Split(' ');

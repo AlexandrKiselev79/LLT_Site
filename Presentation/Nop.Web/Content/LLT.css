@@ -93,6 +93,37 @@
 
 /* Player Info END */
 
+/* Multiple Select Overrides */
+.player-select + .ms-parent .ms-drop {
+    width: 200px;
+}
+
+.player-select + .ms-parent .ms-search {
+    width: 96%;
+}
+
+.player-select + .ms-parent ul {
+    padding-top: 0;
+}
+
+.player-select + .ms-parent li.selected {
+    background-color: #dedede;
+}
+
+.player-select + .ms-parent li * {
+    cursor: pointer;
+}
+
+.player-select + .ms-parent li:hover {
+    background-color: #eee;
+}
+
+.player-select + .ms-parent input[type=radio] {
+    display: none;
+}
+
+/* Multiple Select Overrides END */
+
 /* Utility Classes */
 
 .hidden {

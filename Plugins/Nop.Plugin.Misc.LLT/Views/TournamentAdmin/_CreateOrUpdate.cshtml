@@ -100,6 +100,39 @@
         });
     }
 
+    function playerDropDownFiltered(container, options, dropDownId) {
+        var select = $('<select id="' + dropDownId + '" class="player-select"></select>')
+            .appendTo(container)
+            .multipleSelect({
+                filter: true,
+                width: '100%',
+                single: true,
+                placeholder: "Выбор игрока",
+                onClick: function (option) {
+                    options.model[options.field] = parseInt(option.value);
+                }
+            })
+            .closest('td').css('overflow', 'visible');
+
+        $.ajax({
+            url: '/Players',
+            data: JSON.stringify({Model: {},Command: { Page: 0, PageSize: 0 }}),
+            dataType: "json",
+            type: "POST",
+            contentType: 'application/json',
+        }).done(function(response) {
+            var optionsHtml = [];
+            if (response.Data && response.Data.length) {
+                response.Data.forEach(function(player) {
+                    optionsHtml.push('<option value="' + player.Id + '">' + player.FullName + '</option>');
+                });
+            }
+            $('#' + dropDownId).html(optionsHtml.join(''));
+            $('#' + dropDownId).multipleSelect("refresh");
+            $('#' + dropDownId).multipleSelect('setSelects', []);
+        });
+    }
+
     function filterTournamentPlayersList($dropDownWrapper) {
         if($dropDownWrapper.find('#tournamentPlayersList').length !== 1){
             return;
@@ -321,7 +354,7 @@
                     create: {
                         url: function(match) {
                             var url = "@Html.Raw(Url.Action("MatchInsert", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))"
-                                + '&player1Id=' + match.Player1 + '&player2Id=' + match.Player2 + '&result=' + match.MatchResultDisplay + '&stage=' + match.Stage;
+                                + '&player1Id=' + match.Player1 + '&player2Id=' + match.Player2 + '&result=' + (match.MatchResultDisplay || '') + '&stage=' + match.Stage;
                             return url;
                         },
                         type: "POST",
@@ -331,7 +364,7 @@
                     update: {
                         url: function(match) {
                             var url = "@Html.Raw(Url.Action("MatchUpdate", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))"
-                                + '&matchId=' + match.Id + '&player1Id=' + match.Player1.Id + '&player2Id=' + match.Player2.Id + '&result=' + match.MatchResultDisplay + '&stage=' + match.Stage;
+                                + '&matchId=' + match.Id + '&player1Id=' + match.Player1.Id + '&player2Id=' + match.Player2.Id + '&result=' + (match.MatchResultDisplay || '') + '&stage=' + match.Stage;
                             return url;
                         },
                         type: "POST",
@@ -424,23 +457,25 @@
                     },
                     headerAttributes: {
                         style: "display:none;"
-                    }
+                    },
+                    width: 200
                 },
                 {
                     field: "Player1",
                     title: "Игрок 1",
                     editor: function(container, options) {
-                        playerDropDownEditor(container, options, 'tournamentMatchPlayer1List');
+                        playerDropDownFiltered(container, options, 'tournamentMatchPlayer1List');
                     },
                     template: function(dataItem) {
                         return kendo.htmlEncode(dataItem.Player1.FullName);
                     },
+                    width: 200
                 },
                 {
                     field: "Player2",
                     title: "Игрок 2",
                     editor: function(container, options) {
-                        playerDropDownEditor(container, options, 'tournamentMatchPlayer2List');
+                        playerDropDownFiltered(container, options, 'tournamentMatchPlayer2List');
                     },
                     template: function(dataItem) {
                         return kendo.htmlEncode(dataItem.Player2.FullName);
@@ -479,7 +514,6 @@
                             text: "@T("Admin.Common.Delete")"
                         }
                     ],
-                    width: 100
                 }
             ]
         });

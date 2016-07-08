@@ -61,9 +61,18 @@
     <head>
         <title>@adminPageTitle</title>
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+        
+        <link href="@Url.Content("~/Content/multiple-select/multiple-select.css")" type="text/css" rel="stylesheet" />
+        <link href="@Url.Content("~/Content/LLT.css")" type="text/css" rel="stylesheet" />
+
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
         @Html.NopHeadCustom()
         @Html.NopCssFiles(this.Url, ResourceLocation.Head)
         @Html.NopScripts(this.Url, ResourceLocation.Head)
+
+
+        <script src="~/Content/multiple-select/multiple-select.js"></script>
     </head>
     <body @(supportRtl ? Html.Raw("class=\"k-rtl\"") : null)>
         <div id="ajaxBusy">

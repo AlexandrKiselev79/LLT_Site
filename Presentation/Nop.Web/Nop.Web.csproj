@@ -630,6 +630,9 @@
     <Content Include="Content\kendo\2014.1.318\Uniform\sprite.png" />
     <Content Include="Content\kendo\2014.1.318\Uniform\sprite_2x.png" />
     <Content Include="Content\magnific-popup\magnific-popup.css" />
+    <Content Include="Content\multiple-select\multiple-select.css" />
+    <Content Include="Content\multiple-select\multiple-select.js" />
+    <Content Include="Content\multiple-select\multiple-select.png" />
     <Content Include="Content\Roxy_Fileman\conf.json" />
     <Content Include="Content\Roxy_Fileman\css\images\animated-overlay.gif" />
     <Content Include="Content\Roxy_Fileman\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
