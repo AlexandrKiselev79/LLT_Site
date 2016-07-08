@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Nop.Plugin.Misc.LLT.Enums;
+using Nop.Plugin.Misc.LLT.Infrastructure;
 
 namespace Nop.Plugin.Misc.LLT.Models.Player
 {
@@ -8,10 +9,11 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
     {
         public PlayerModel()
         {
+            Ranking = new RankingModel();
             Gender = GenderType.Man;
             ForehandRight = true;
-            DateOfBirth = new DateTime(1900, 1, 1);
-            PlayFrom = new DateTime(1900, 1, 1);
+            DateOfBirth = Constants.MinimalSqlDate;
+            PlayFrom = Constants.MinimalSqlDate;
         }
 
         public int Id { get; set; }
@@ -38,16 +40,30 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
             }
         }
 
-        public string Country { get; set; }
+        public string Age
+        {
+            get
+            {
+                string age = "";
+
+                if (this.DateOfBirth > Constants.MinimalSqlDate)
+                {
+                    age = ((int)((DateTime.Now - this.DateOfBirth).Days / 365)).ToString();
+                }
+                return age;
+            }
+        }
+
+        public Country Country { get; set; }
 
         public string CountryString
         {
             get
             {
-                if (string.IsNullOrEmpty(Country))
+                if (this.Country == Country.None)
                     return string.Empty;
 
-                return Country;
+                return Enum.GetName(typeof(Country), this.Country);
             }
         }
 
@@ -61,6 +77,21 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
                     return string.Empty;
 
                 return City;
+            }
+        }
+
+        public string LivingPlace
+        {
+            get
+            {
+                var country = this.CountryString;
+                var city = this.CityString;
+
+                var livingPlace = country != string.Empty && city != string.Empty ?
+                        string.Format("{0}, {1}", country, city) :
+                        country != string.Empty ?
+                        country : city;
+                return livingPlace;
             }
         }
 
@@ -107,5 +138,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
                 return Enum.GetName(typeof(PlayerLevel), Level);
             }
         }
+
+        public RankingModel Ranking { get; set; }
     }
 }

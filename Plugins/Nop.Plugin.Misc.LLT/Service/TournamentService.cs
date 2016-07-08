@@ -52,7 +52,8 @@ namespace Nop.Plugin.Misc.LLT.Service
             _tournamentPlayerRepository.Update(tournamentPlayer);
         }
 
-        public void RemovePlayer(Tournament tournament, Player player) {
+        public void RemovePlayer(Tournament tournament, Player player)
+        {
             var tournamentPlayer = _tournamentPlayerRepository.Table.Where(tp => tp.Tournament.Id == tournament.Id && tp.Player.Id == player.Id).ToList();
             _tournamentPlayerRepository.Delete(tournamentPlayer);
         }
@@ -63,21 +64,32 @@ namespace Nop.Plugin.Misc.LLT.Service
             _tournamentMatchRepository.Insert(tournamentMatch);
         }
 
-        public Match GetMatchById(int tournamentId, int matchId) {
-            var match = _tournamentMatchRepository.Table.Where(tm => tm.Tournament.Id == tournamentId && tm.Match.Id == matchId).Select(a=>a.Match).First();
+        public Match GetMatchById(int tournamentId, int matchId)
+        {
+            var match = _tournamentMatchRepository.Table.Where(tm => tm.Tournament.Id == tournamentId && tm.Match.Id == matchId).Select(a => a.Match).First();
             return match;
         }
 
         public void UpdateMatch(Tournament tournament, Match match)
         {
-            var tournamentMatch = _tournamentMatchRepository.Table.Where(tp => tp.Tournament.Id == tournament.Id && tp.Match.Id == match.Id).ToList();
-            _tournamentMatchRepository.Update(tournamentMatch);
+            var tournamentMatch = _tournamentMatchRepository.Table.Where(tp => tp.Tournament.Id == tournament.Id && tp.Match.Id == match.Id).FirstOrDefault();
+            if (tournamentMatch != null)
+            {
+                tournamentMatch.Match.CopyFrom(match);
+                tournamentMatch.Tournament.CopyFrom(tournament);
+
+                _tournamentMatchRepository.Update(tournamentMatch);
+            }
         }
 
         public void RemoveMatch(Tournament tournament, Match match)
         {
-            var tournamentMatch = _tournamentMatchRepository.Table.Where(tp => tp.Tournament.Id == tournament.Id && tp.Match.Id == match.Id).ToList();
-            _tournamentMatchRepository.Delete(tournamentMatch);
+            var tournamentMatch = _tournamentMatchRepository.Table.Where(tp => tp.Tournament.Id == tournament.Id && tp.Match.Id == match.Id).FirstOrDefault();
+            if (tournamentMatch != null)
+            {
+                tournamentMatch.Match.CopyFrom(match);
+                _tournamentMatchRepository.Update(tournamentMatch);
+            }
         }
 
         public void Delete(Tournament tournament)
@@ -115,15 +127,16 @@ namespace Nop.Plugin.Misc.LLT.Service
 
             var players = new List<PlayerModel>();
             var tournamentPlayers = _tournamentPlayerRepository.Table.Where(t => t.Tournament.Id == tournamentId).Select(tp => tp.Player).ToList();
-            tournamentPlayers.ForEach((p) => {
+            tournamentPlayers.ForEach((p) =>
+            {
                 players.Add(Mapper.Map<Player, PlayerModel>(p));
             });
 
             var details = new TournamentDetailsModel
             {
                 GeneralInfo = Mapper.Map<Tournament, TournamentModel>(_tournamentRepository.GetById(tournamentId)),
-                PlayedMatches = matches.Where(m => m.SetResults != null && m.SetResults.Any()).Select(Mapper.Map<Match, MatchModel>).ToList(),
-                PlannedMatches = matches.Where(m => m.SetResults == null || !m.SetResults.Any()).Select(Mapper.Map<Match, MatchModel>).ToList(),
+                PlayedMatches = matches.Where(m => m.SetResults != null && m.SetResults.Any() && !m.Deleted).Select(Mapper.Map<Match, MatchModel>).ToList(),
+                PlannedMatches = matches.Where(m => (m.SetResults == null || !m.SetResults.Any()) && !m.Deleted).Select(Mapper.Map<Match, MatchModel>).ToList(),
                 Players = players
             };
 
@@ -132,7 +145,7 @@ namespace Nop.Plugin.Misc.LLT.Service
 
         public List<Tournament> GetAll()
         {
-            return  _tournamentRepository.Table.ToList();
+            return _tournamentRepository.Table.ToList();
         }
 
         public List<Tournament> GetAllInPeriod(DateTime startDate, DateTime endDate)

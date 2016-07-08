@@ -6,6 +6,7 @@ using AutoMapper;
 using Nop.Admin.Controllers;
 using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Domain;
+using Nop.Plugin.Misc.LLT.Enums;
 using Nop.Plugin.Misc.LLT.Extensions;
 using Nop.Plugin.Misc.LLT.Models.Match;
 using Nop.Plugin.Misc.LLT.Models.Player;
@@ -159,7 +160,7 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         }
 
         [HttpPost]
-        public ActionResult MatchInsert(int tournamentId, int? player1Id, int? player2Id, string result)
+        public ActionResult MatchInsert(int tournamentId, int? player1Id, int? player2Id, string result, TournamentStage stage)
         {
             var tournament = _tournamentService.GetById(tournamentId);
 
@@ -168,6 +169,8 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             match.Club.Address = _addressService.GetById(2);
             match.Player1 = _playerService.GetById(player1Id.Value);
             match.Player2 = _playerService.GetById(player2Id.Value);
+            match.Stage = stage;
+
             ParseMatchResult(match, result);
 
             _tournamentService.AddMatch(tournament, match);
@@ -175,12 +178,13 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         }
 
         [HttpPost]
-        public ActionResult MatchUpdate(int tournamentId, int? matchId, int? player1Id, int? player2Id, string result)
+        public ActionResult MatchUpdate(int tournamentId, int? matchId, int? player1Id, int? player2Id, string result, TournamentStage stage)
         {
             var tournament = _tournamentService.GetById(tournamentId);
             var match = _tournamentService.GetMatchById(tournamentId, matchId.Value);
             match.Player1 = _playerService.GetById(player1Id.Value);
             match.Player2 = _playerService.GetById(player2Id.Value);
+            match.Stage = stage;
 
             ParseMatchResult(match, result);
 
@@ -202,7 +206,8 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         private void ParseMatchResult(Match match, string result)
         {
             var setResults = new List<SetResult>();
-            var sets = result.Split(' ');
+
+            var sets = result.Trim().Split(' ');
             for (var i = 0; i < sets.Length; i++)
             {
                 var set = sets[i];
@@ -210,24 +215,22 @@ namespace Nop.Plugin.Misc.LLT.Controllers
                 var setResult = new SetResult();
                 if (set.Contains('-') && set.Split(new[] { "-" }, StringSplitOptions.RemoveEmptyEntries).Length == 2)
                 {
-                    var isTieBreak = set.Contains('(') && set.Contains(')');
-
                     setResult.Number = i + 1;
                     setResult.Player1 = match.Player1;
                     setResult.Player2 = match.Player2;
                     setResult.Player1Games = int.Parse(set.Split('-')[0]);
-                    setResult.Player2Games = isTieBreak ? int.Parse(set.Split('-')[1].Split('(')[0]) : int.Parse(set.Split('-')[1]);
+                    setResult.Player2Games = int.Parse(set.Split('-')[1]);
 
-                    if (isTieBreak)
+                    if (match.SetResults != null && match.SetResults.Count > i)
                     {
-                        var lostTieBreakScore = isTieBreak ? int.Parse(set.Split('(')[1].Replace(")", "")) : 0;
-                        var wonTieBreakScore = lostTieBreakScore < 6 ? 7 : lostTieBreakScore + 2;
-
-                        var player1WonSet = setResult.Player1Games > setResult.Player2Games;
-                        setResult.Player1TieBreak = player1WonSet ? wonTieBreakScore : lostTieBreakScore;
-                        setResult.Player2TieBreak = player1WonSet ? lostTieBreakScore : wonTieBreakScore;
+                        var existingSetResult = match.SetResults[i];
+                        existingSetResult.CopyFrom(setResult);
+                        setResults.Add(existingSetResult);
                     }
-                    setResults.Add(setResult);
+                    else
+                    {
+                        setResults.Add(setResult);
+                    }
                 }
                 else
                 {

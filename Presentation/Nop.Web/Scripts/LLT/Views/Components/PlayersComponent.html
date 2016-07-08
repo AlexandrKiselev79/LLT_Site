@@ -1,0 +1,45 @@
+﻿<div id="players-list-wrapper" class="container">
+    <div class="players-filter">
+        <div>Фильтровать по имени:</div>
+        <input type="text" id="playersFilter" placeholder="Start typing to filter players" data-bind="textInput: Filter, event: { keydown: clearFilter }" />
+        <button type="button" id="playersClearFilter" class="btn btn-info" data-bind="click: clearFilter ">Показать всех</button>
+    </div>
+    <div class="players-list" class="row">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Рейтинг
+                    </th>
+                    <th>
+                        Имя
+                    </th>
+                    <th>
+                        Страна
+                    </th>
+                    <th>
+                        Возраст
+                    </th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: Players, as: 'Player' }">
+                <tr>
+                    <td>
+                        <span class="ranking" data-bind="text: Player.Ranking.CurrentRankingString"></span>
+                    </td>
+                    <td>
+                        <a data-bind="attr: { href: '/Player/Player?playerId=' + Player.Id }">
+                            <span class="name" data-bind="text: Player.FullName"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <span class="country" data-bind="text: Player.CountryString"></span>
+                    </td>
+                    <td>
+                        <span class="age" data-bind="text: Player.Age"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

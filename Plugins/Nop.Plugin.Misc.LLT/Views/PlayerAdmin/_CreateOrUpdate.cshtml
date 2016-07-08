@@ -73,7 +73,7 @@
                     @Html.NopLabelFor(model => model.Country):
                 </td>
                 <td class="adminData">
-                    @Html.EditorFor(model => model.Country)
+                    @Html.DropDownListFor(model => model.Country, ((Country)Model.Country).ToSelectList())
                 </td>
             </tr>
             <tr>

@@ -17,7 +17,12 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
         public PlayerModel Player1 { get; set; }
         public PlayerModel Player2 { get; set; }
 
-        public MatchStage Stage { get; set; }
+        public TournamentStage Stage { get; set; }
+
+        public string StageString
+        {
+            get { return Enum.GetName(typeof(TournamentStage), Stage); }
+        }
 
         // Results
         public List<SetResultModel> SetResults { get; set; }

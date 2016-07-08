@@ -4,14 +4,13 @@
 @using Nop.Web.Extensions;
 @{
     var displayMiniProfiler = EngineContext.Current.Resolve<Nop.Core.Domain.StoreInformationSettings>().DisplayMiniProfilerInPublicStore;
-
+    
     Html.AppendScriptParts("~/Scripts/public.ajaxcart.js");
     Html.AppendScriptParts("~/Scripts/public.common.js");
     Html.AppendScriptParts("~/Scripts/jquery-migrate-1.2.1.min.js");
     Html.AppendScriptParts("~/Scripts/jquery-ui-1.10.3.custom.min.js");
     Html.AppendScriptParts("~/Scripts/jquery.validate.unobtrusive.min.js");
     Html.AppendScriptParts("~/Scripts/jquery.validate.min.js");
-    Html.AppendScriptParts("~/Scripts/jquery-1.10.2.min.js");
 
     //X-UA-Compatible tag
     var commonSettings = EngineContext.Current.Resolve<CommonSettings>();
@@ -23,12 +22,24 @@
 <!DOCTYPE html>
 <html @Html.Partial("LanguageAttributes")>
 <head>
-    <title>@Html.GetPageTitle()</title>
+    <title>@Html.GetPageTitle(true)</title>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
     <meta name="description" content="@(Html.NopMetaDescription())" />
     <meta name="keywords" content="@(Html.NopMetaKeywords())" />
     <meta name="generator" content="nopCommerce" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="@Url.Content("~/Content/LLT.css")" type="text/css" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/bootstrap/bootstrap.min.css")" type="text/css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/ThirdParty/knockout.js"></script>
+    <script src="~/Scripts/ThirdParty/bootstrap.min.js"></script>
+
+    <script src="~/Scripts/LLT/LLT.js"></script>
+    <script src="~/Scripts/LLT/Views/MainView.js"></script>
+    <script src="~/Scripts/LLT/Views/Components/PlayersComponent.js"></script>
+    
     @Html.NopHeadCustom()
     @*This is used so that themes can inject content into the header*@
     @Html.Partial("Head")

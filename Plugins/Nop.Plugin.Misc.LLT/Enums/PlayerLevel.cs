@@ -1,4 +1,6 @@
-﻿namespace Nop.Plugin.Misc.LLT.Enums
+﻿using System;
+
+namespace Nop.Plugin.Misc.LLT.Enums
 {
     public enum PlayerLevel
     {

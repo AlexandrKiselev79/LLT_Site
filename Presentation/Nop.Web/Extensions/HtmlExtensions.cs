@@ -250,11 +250,17 @@ namespace Nop.Web.Extensions
             return cachedSeName;
         }
 
-        public static string GetPageTitle(this HtmlHelper html) {
+        public static string GetPageTitle(this HtmlHelper html, bool prefixWithSiteName) {
             var defaultTitle = "Любительская Лига Тенниса";
             var currentPageTitle = html.ViewContext.Controller.ViewData["PageTitle"];
-            var fullTitle = defaultTitle + (currentPageTitle != null ? " | " + currentPageTitle : "");
-
+            var fullTitle = prefixWithSiteName ? defaultTitle : "";
+            if (currentPageTitle != null)
+            {
+                if(fullTitle.Length > 0) {
+                    fullTitle += " | ";
+                }
+                fullTitle += currentPageTitle;
+            }
             return fullTitle;
         }
     }

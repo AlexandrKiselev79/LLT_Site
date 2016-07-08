@@ -5,41 +5,75 @@
     Layout = "~/Plugins/Misc.LLT/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm())
-{
-    
-    @Html.AntiForgeryToken()
-    <div class="section-header">
-        <div class="title">
-            <h1>Игроки</h1>
-        </div>
-    </div>
-    <br/><br/>
-    if (Model.Players.Count > 0)
+<script type="text/javascript">
+    $(document).ready(function() {
+        initPageHandlers();
+    });
+
+    function initPageHandlers() {
+        $('#inputPlayersFilter').on('keyup', function (event, target) {
+            filterUsers(event.target.value);
+        });
+
+        $('#inputPlayersRemoveFilter').on('click', function (event, target) {
+            filterUsers('');
+        });
+    }
+
+    function filterUsers(filterValue) {
+        $('.players-list tbody tr').each(function (index, element) {
+            if (filterValue && $(this).find('.player-name').text().toLowerCase().indexOf(filterValue) === -1) {
+                $(this).addClass('hidden');
+            }
+            else {
+                $(this).removeClass('hidden');
+            }
+        });
+    }
+</script>
+
+<div data-bind="component: 'players-list-component'"></div>
+
+<div id="players-list-wrapper" style="display: none;">
+    @using (Html.BeginForm())
     {
-        <div class="llt-players">
-            <table class="">
-            <thead>
-            <tr>
-                <th>
-                    Полное Имя
-                </th>
-                <th>
-                    Уровень
-                </th>
-                <th>
-                    Страна
-                </th>
-                <th>
-                    Город
-                </th>
-                <th>
-                    Пол
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Players)
+        @Html.AntiForgeryToken()
+        <div class="section-header">
+            <div class="title">
+                <h1>Игроки</h1>
+            </div>
+        </div>
+
+        if (Model.Players.Count > 0)
+        {
+            <div class="players-filter">
+                <span>Фильтровать по имени:</span>
+                <input type="text" id="inputPlayersFilter" placeholder="Start typing to filter players"/>
+                <input type="button" id="inputPlayersRemoveFilter" value="Показать всех"/>
+            </div>
+            <div class="players-list">
+                <table class="">
+                    <thead>
+                        <tr>
+                            <th>
+                                Полное Имя
+                            </th>
+                            <th>
+                                Уровень
+                            </th>
+                            <th>
+                                Страна
+                            </th>
+                            <th>
+                                Город
+                            </th>
+                            <th>
+                                Пол
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Players)
             {
                 <tr>
                     <td class="player-name">
@@ -58,9 +92,10 @@
                         @Html.Label(EnumService.GenderTypeString(item.Gender))
                     </td>
                 </tr>
-            }  
-            </tbody>
-            </table>         
-        </div>
+            }
+                    </tbody>
+                </table>
+            </div>
+        }
     }
-}
+</div>

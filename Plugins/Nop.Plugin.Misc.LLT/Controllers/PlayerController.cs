@@ -40,14 +40,25 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         public ActionResult List(PlayerListModel model, DataSourceRequest command)
         {
             var players = _playerService.GetAll(model.SearchLevel, model.SearchFullName);
+            var resultData = command.Page > 0 && command.PageSize > 0 ?
+                players.PagedForCommand(command).Select(x => x) :
+                players;
+
 
             var gridModel = new DataSourceResult
             {
-                Data = players.PagedForCommand(command).Select(x => x),
+                Data = resultData,
                 Total = players.Count
             };
 
             return Json(gridModel);
+        }
+
+        [HttpGet]
+        public ActionResult ListAll()
+        {
+            var players = _playerService.GetAll();
+            return Json(players);
         }
 
         public ActionResult Player(int playerId)

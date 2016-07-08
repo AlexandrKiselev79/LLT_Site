@@ -2,7 +2,7 @@
 
 namespace Nop.Plugin.Misc.LLT.Enums
 {
-    public enum MatchStage
+    public enum TournamentStage
     {
         Final = 0,
         SemiFinal = 1,

@@ -57,11 +57,11 @@
     var lastRemovedMatchPlayers = {};
     var lastRemovedMatchPlayerIndeces = {};
 
-    function levelDropDownEditor(container, options) {
-        $('<input required/>')
+    function genericDropDownEditor(container, options, dataSource) {
+        $('<input required data-text-field="Name" data-value-field="Id" data-bind="value:' + options.field + '"/>')
             .appendTo(container)
             .kendoDropDownList({
-                dataSource: playerLevels,
+                dataSource: dataSource,
                 dataTextField: "Name",
                 dataValueField: "Id"
             });
@@ -94,7 +94,6 @@
             },
             select: null,
             dataBound: function(e) {
-
                 filterTournamentPlayersList(e.sender.wrapper);
             },
             open: null
@@ -166,6 +165,21 @@
             var levelName = Enum.GetName(typeof(PlayerLevel), levelId);
             <text>
                 { Id: @(levelId), Name: "@(levelName)" },
+            </text>
+        }
+    ];
+
+    var tournamentStages = [
+        @{
+            var stageValues = Enum.GetValues(typeof(TournamentStage));
+        }
+
+        @for (int i = 0; i < stageValues.Length; i++)
+        {
+            var stageId = (int)stageValues.GetValue(i);
+            var stageName = Enum.GetName(typeof(TournamentStage), stageId);
+            <text>
+                { Id: @(stageId), Name: "@(stageName)" },
             </text>
         }
     ];
@@ -307,7 +321,7 @@
                     create: {
                         url: function(match) {
                             var url = "@Html.Raw(Url.Action("MatchInsert", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))"
-                                + '&player1Id=' + match.Player1 + '&player2Id=' + match.Player2 + '&result=' + match.MatchResultDisplay;
+                                + '&player1Id=' + match.Player1 + '&player2Id=' + match.Player2 + '&result=' + match.MatchResultDisplay + '&stage=' + match.Stage;
                             return url;
                         },
                         type: "POST",
@@ -317,7 +331,7 @@
                     update: {
                         url: function(match) {
                             var url = "@Html.Raw(Url.Action("MatchUpdate", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))"
-                                + '&matchId=' + match.Id + '&player1Id=' + match.Player1.Id + '&player2Id=' + match.Player2.Id + '&result=' + match.MatchResultDisplay;
+                                + '&matchId=' + match.Id + '&player1Id=' + match.Player1.Id + '&player2Id=' + match.Player2.Id + '&result=' + match.MatchResultDisplay + '&stage=' + match.Stage;
                             return url;
                         },
                         type: "POST",
@@ -346,16 +360,24 @@
                             Player1: { },
                             Player2: { },
                             MatchResultDisplay: { editable: true, validation: {
-                                required: true,
+                                required: false,
                                 validation: function (input) {
                                     if (input.is("[name='MatchResultDisplay']") && input.val() != "") {
-                                        input.attr("data-MatchResultDisplayValidation-msg", "Match Result should not be empty");
-                                        return /^[A-Z]/.test(input.val());
+                                        var matchResultRegex = /^(\d\d?-\d\d?\s?)*$/;
+                                        if (matchResultRegex.test(input.val())) {
+                                            return true;
+                                        }
+                                        else {
+                                            alert('Результат матча должен содержать как минимум результат одного сета (сет может быть неполным)');
+                                            return false;
+                                        }
                                     }
-
                                     return true;
                                 }
-                            } },
+                            }
+                            },
+                            Stage: { editable: true, type: "number" },
+                            StartDateTime: { editable: false }
                         }
                     }
                 },
@@ -397,7 +419,6 @@
                 {
                     field: "Id",
                     title: "Матч",
-                    width: 10,
                     attributes: {
                         style: "display:none;"
                     },
@@ -414,7 +435,6 @@
                     template: function(dataItem) {
                         return kendo.htmlEncode(dataItem.Player1.FullName);
                     },
-                    width: 120
                 },
                 {
                     field: "Player2",
@@ -425,12 +445,28 @@
                     template: function(dataItem) {
                         return kendo.htmlEncode(dataItem.Player2.FullName);
                     },
-                    width: 120
                 },
                 {
                     field: "MatchResultDisplay",
                     title: "Результат",
-                    width: 120
+                },
+                {
+                    field: "Stage",
+                    title: "Стадия Турнира",
+                    editor: function(container, options) {
+                        genericDropDownEditor(container, options, tournamentStages);
+                    },
+                    template: function(matchModel) {
+                        var stages = tournamentStages.filter(function(item, index) {
+                            return item.Id == matchModel.Stage;
+                        });
+                        var stageDisplay = stages.length === 1? stages[0].Name : 'N/A';
+                        return stageDisplay;
+                    },
+                },
+                {
+                    field: "StartDateTime",
+                    title: "Дата",
                 },
                 {
                     command: [

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Nop.Core;
+using Nop.Plugin.Misc.LLT.Enums;
 
 namespace Nop.Plugin.Misc.LLT.Domain
 {
@@ -28,7 +29,23 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public int CourtNumber { get; set; }
         // Дата начала игры
         public DateTime StartDateTime { get; set; }
+        
+        public TournamentStage Stage { get; set; }
 
         public bool Deleted { get; set; }
+
+        internal void CopyFrom(Match match)
+        {
+            IsTournamentMatch = match.IsTournamentMatch;
+            Player1 = match.Player1;
+            Player2 = match.Player2;
+            SetResults = match.SetResults;
+            TieBreakResult = match.TieBreakResult;
+            Club = match.Club;
+            CourtNumber = match.CourtNumber;
+            StartDateTime = match.StartDateTime;
+            Stage = match.Stage;
+            Deleted = match.Deleted;
+        }
     }
 }

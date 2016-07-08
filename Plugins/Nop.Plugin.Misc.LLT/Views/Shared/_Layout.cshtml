@@ -9,18 +9,21 @@
 </div>
 
 <div class="main-content">
-	<div class="container">
-		<div id="mainContainer" class="main-container">
-@RenderBody()
-		</div>
-	</div>
+    <div class="container-fluid">
+        <div id="mainContainer" class="main-container">
+            <div class="page-title">
+                <h1>@Html.GetPageTitle(false)</h1>
+            </div>
+            @RenderBody()
+        </div>
+    </div>
 </div>
 
 <div class="footer" style="position: fixed; bottom: 0">
     <div class="footer-powered-by" style="position: fixed; bottom: 0">
         Powered by <a href="http://www.nopcommerce.com/">nopCommerce</a>
         @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
-        Find more info here http://www.nopcommerce.com/copyrightremoval.aspx*@
+            Find more info here http://www.nopcommerce.com/copyrightremoval.aspx*@
     </div>
 </div>
 

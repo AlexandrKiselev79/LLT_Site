@@ -7,74 +7,54 @@
 
 @using (Html.BeginForm())
 {
-    
+
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
             <a href="@Url.RouteUrl("Plugin.Misc.LLT.ViewPlayers")">Вернуться к списку игроков</a>
         </div>
     </div>
-    <br/><br/>
-    <table>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <td>
-                            @Html.Label(@Model.GeneralInfo.FullName)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Рост: @Html.Label(@Model.GeneralInfo.HeightString)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Вес: @Html.Label(@Model.GeneralInfo.WeightString)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Уровень: @Html.Label(@Model.GeneralInfo.Level.ToString())
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Форхенд: @Html.Label(@Model.GeneralInfo.ForehandRightString)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Играет с: @Html.Label(@Model.GeneralInfo.PlayFromString)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Место проживания: @Model.GeneralInfo.Country / @Model.GeneralInfo.City
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Дата рождения: @Html.Label(@Model.GeneralInfo.DateOfBirthString)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Пол: @Html.Label(EnumService.GenderTypeString(@Model.GeneralInfo.Gender))
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td>
-                Фото
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Планируемые матчи
-                <br/>
-                <br/>
+    <div class="player-info container">
+        <div class="row">
+            <div class="section section-bio col-md-6">
+                <div class="photo col-md-4">
+                    <img src="~/Images/no-picture-man.png" alt="Player Photo" />
+                </div>
+                <div class="details col-md-8">
+                    <div class="info-item name">
+                        @Model.GeneralInfo.FullName
+                    </div>
+                    <div class="info-item">
+                        <label>Рейтинг:&nbsp;</label>@Model.GeneralInfo.Ranking.CurrentRankingString
+                    </div>
+                    <div class="info-item">
+                        <label>Лучший Рейтинг:&nbsp;</label>@Model.GeneralInfo.Ranking.BestRankingString
+                    </div>
+                    <div class="info-item">
+                        <label>Пол:&nbsp;</label>@Model.GeneralInfo.Gender
+                    </div>
+                    <div class="info-item">
+                        <label>Рост:&nbsp;</label>@Model.GeneralInfo.HeightString
+                    </div>
+                    <div class="info-item">
+                        <label>Вес:&nbsp;</label>@Model.GeneralInfo.WeightString
+                    </div>
+                    <div class="info-item">
+                        <label>Уровень:&nbsp;</label>@Model.GeneralInfo.LevelString
+                    </div>
+                    <div class="info-item">
+                        <label>Форхенд:&nbsp;</label>@Model.GeneralInfo.ForehandRightString
+                    </div>
+                    <div class="info-item">
+                        <label>Место проживания:&nbsp;</label>@Model.GeneralInfo.LivingPlace
+                    </div>
+                    <div class="info-item">
+                        <label>Дата рождения:&nbsp;</label>@Model.GeneralInfo.Age
+                    </div>
+                </div>
+            </div>
+            <div class="section section-matches col-md-6">
+                <div>Планируемые Матчи</div>
                 @*@if (@Model.PlannedMatches.Any())
                 {
                     <table>
@@ -88,12 +68,8 @@
                         }
                     </table>
                 }*@
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Сыгранные матчи
-            </td>
-        </tr>
-    </table>
+                <div>Сыгранные Матчи</div>
+            </div>
+        </div>
+    </div>
 }

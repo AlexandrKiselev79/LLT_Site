@@ -1,8 +1,9 @@
-﻿using Nop.Core;
+﻿using System;
+using Nop.Core;
 
 namespace Nop.Plugin.Misc.LLT.Domain
 {
-    public class SetResult: BaseEntity
+    public class SetResult : BaseEntity
     {
         // Номер
         public int Number { get; set; }
@@ -18,5 +19,14 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public virtual Player Player1 { get; set; }
         // Игрок 2
         public virtual Player Player2 { get; set; }
+
+        internal void CopyFrom(SetResult setResult)
+        {
+            this.Number = setResult.Number;
+            this.Player1Games = setResult.Player1Games;
+            this.Player2Games = setResult.Player2Games;
+            this.Player1TieBreak = setResult.Player1TieBreak;
+            this.Player2TieBreak = setResult.Player2TieBreak;
+        }
     }
 }

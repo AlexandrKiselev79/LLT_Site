@@ -4,17 +4,17 @@
     //page title
     ViewBag.Title = "Добавить";
 }
-@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "player-form" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "tournament-form" }))
 {
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
         <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
-            @T("Admin.Tournament.AddNew") @Html.ActionLink("(" + T("Admin.Tournament.BackToList") + ")", "List")
+            Редактирование турнира - @Html.ActionLink("(вернуться к списку) + ")", "List")
         </div>
         <div class="options">
-            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
-            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+            <input type="submit" name="save" class="k-button" value="Сохранить" />
+            <input type="submit" name="save-continue" class="k-button" value="Сохранить и Продолжить редактировать" />
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)
