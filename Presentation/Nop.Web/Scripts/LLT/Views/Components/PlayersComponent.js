@@ -9,7 +9,7 @@
         var filter = newValue || '';
         if (filter.length > 0) {
             var filteredPlayers = root.AllPlayers.filter(function (player) {
-                return player.FullName.toLowerCase().indexOf(filter) > -1;
+                return player.FullName.toLowerCase().indexOf(filter.toLowerCase()) > -1;
             });
             root.Players(filteredPlayers);
         }
@@ -39,10 +39,15 @@
     });
 
     root.clearFilter = function (sender, event) {
-        if (event.type === 'click' || event.keyCode === 27) {
-            root.Players(root.AllPlayers);
-            root.Filter('');
-        }
+		if(event) {
+			if (event.type === 'click' || event.keyCode === 27) {
+				root.Players(root.AllPlayers);
+				root.Filter('');
+			}
+		}
+		else {
+			root.Players(root.AllPlayers);
+		}
         return true;
     };
 
