@@ -159,6 +159,7 @@
     <Compile Include="Enums\PlayerLevel.cs" />
     <Compile Include="Enums\TournamentType.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
+    <Compile Include="Extensions\ModelExtentions.cs" />
     <Compile Include="Infrastructure\AutoMapperStartUpTask.cs" />
     <Compile Include="Infrastructure\Constants.cs" />
     <Compile Include="Infrastructure\CustomViewEngine.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Enums;
+using Nop.Plugin.Misc.LLT.Extensions;
 using Nop.Plugin.Misc.LLT.Models.Player;
 using Nop.Plugin.Misc.LLT.Models.TennisClub;
 
@@ -60,6 +61,17 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
         public TennisClubModel Club { get; set; }
         public int CourtNumber { get; set; }
         public DateTime StartDateTime { get; set; }
+
+        public string StartDateString
+        {
+            get
+            {
+                return this.StartDateTime.GetDateString(true);
+            }
+            set {
+                this.StartDateTime.SetDateString(value);
+            }
+        }
 
         public bool IsWonBy(int playerId)
         {
