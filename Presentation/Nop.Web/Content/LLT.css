@@ -81,6 +81,7 @@
 .player-info .photo img {
     width: 100%;
     min-height: 50px;
+	max-width: 120px;
 }
 
 .player-info .info-item {
