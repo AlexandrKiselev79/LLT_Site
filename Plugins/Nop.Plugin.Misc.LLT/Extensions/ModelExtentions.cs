@@ -11,7 +11,7 @@ namespace Nop.Plugin.Misc.LLT.Extensions
             var dateString = string.Empty;
             if (date != MinDate && date != DateTime.MinValue)
             {
-                var dateFormat = "d MMMM yyyy";
+                var dateFormat = "d MMMM";
                 if (includeTime)
                 {
                     dateFormat += " HH:mm";

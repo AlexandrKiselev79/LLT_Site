@@ -1,6 +1,7 @@
 ﻿function PlayersComponent() {
     var root = {};
 
+    root.DataLoaded = ko.observable(false);
     root.AllPlayers = [];
 
     root.Players = ko.observableArray([]);
@@ -35,6 +36,7 @@
             return 0;
         });
 
+        root.DataLoaded(true);
         root.Players(root.AllPlayers);
     });
 

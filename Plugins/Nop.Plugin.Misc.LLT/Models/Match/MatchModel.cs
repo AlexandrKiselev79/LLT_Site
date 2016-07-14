@@ -11,6 +11,10 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
 {
     public class MatchModel
     {
+        public MatchModel() {
+            this.Stage = TournamentStage.Group;
+        }
+
         public int Id { get; set; }
         public bool IsTournamentMatch { get; set; }
 

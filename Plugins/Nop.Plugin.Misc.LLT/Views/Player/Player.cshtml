@@ -1,4 +1,5 @@
 ﻿@using Nop.Plugin.Misc.LLT.Service
+@using Nop.Plugin.Misc.LLT.Extensions;
 @model Nop.Plugin.Misc.LLT.Models.Player.PlayerDetailsModel
 
 @{
@@ -16,7 +17,7 @@
     </div>
     <div class="player-info container">
         <div class="row">
-            <div class="section section-bio col-md-6">
+            <div class="section section-bio col-md-7">
                 <div class="photo col-md-4">
                     <img src="~/Images/no-picture-man.png" alt="Player Photo" />
                 </div>
@@ -31,13 +32,27 @@
                         <label>Лучший Рейтинг:&nbsp;</label>@Model.GeneralInfo.Ranking.BestRankingString
                     </div>
                     <div class="info-item">
-                        <label>Пол:&nbsp;</label>@Model.GeneralInfo.Gender
+                        <label>Лучший Результат:&nbsp;</label>Wimbledon Final 2016 @*@Model.GeneralInfo.BestResult*@
+                    </div>
+                    <br />
+                    <div class="info-item">
+                        <label>Пол:&nbsp;</label>@Model.GeneralInfo.GenderString
+                    </div>
+                    <div class="info-item">
+                        <label>Возраст:&nbsp;</label>@Model.GeneralInfo.Age
                     </div>
                     <div class="info-item">
                         <label>Рост:&nbsp;</label>@Model.GeneralInfo.HeightString
                     </div>
                     <div class="info-item">
                         <label>Вес:&nbsp;</label>@Model.GeneralInfo.WeightString
+                    </div>
+                    <br />
+                    <div class="info-item">
+                        <label>Город:&nbsp;</label>@Model.GeneralInfo.City
+                    </div>
+                    <div class="info-item">
+                        <label>Страна:&nbsp;</label>@Model.GeneralInfo.CountryString
                     </div>
                     <div class="info-item">
                         <label>Уровень:&nbsp;</label>@Model.GeneralInfo.LevelString
@@ -48,27 +63,54 @@
                     <div class="info-item">
                         <label>Место проживания:&nbsp;</label>@Model.GeneralInfo.LivingPlace
                     </div>
+                    <br />
                     <div class="info-item">
-                        <label>Дата рождения:&nbsp;</label>@Model.GeneralInfo.Age
+                        <label>Статистика:&nbsp;</label>
+                    </div>
+                    <div class="info-item">
+                        <label>&nbsp;&nbsp;vs. Masters:&nbsp;</label>6.6% (1/15)
+                    </div>
+                    <div class="info-item">
+                        <label>&nbsp;&nbsp;vs. Challenger:&nbsp;</label>15.3% (23/15)
+                    </div>
+                    <div class="info-item">
+                        <label>&nbsp;&nbsp;vs. Futures:&nbsp;</label>0% (0/0)
                     </div>
                 </div>
             </div>
-            <div class="section section-matches col-md-6">
-                <div>Планируемые Матчи</div>
-                @*@if (@Model.PlannedMatches.Any())
+            <div class="section section-matches col-md-5">
+                @if (@Model.PlannedMatches.Any())
                 {
-                    <table>
+                    <div class="matches col-md-12">
+                        <label>Планируемые Матчи:&nbsp;</label>
                         @foreach (var match in @Model.PlannedMatches)
                         {
-                            <tr>
-                                <td>
-                                    @match.
-                                </td>
-                            </tr>
+                            <div class="info-item">
+                                <div class="date">@match.StartDateString</div>
+                                @match.Player1.FullName vs. @match.Player2.FullName
+                            </div>
                         }
-                    </table>
-                }*@
-                <div>Сыгранные Матчи</div>
+                    </div>
+                }
+
+                @if (@Model.PlayedMatches.Any())
+                {
+                    <div class="matches col-md-12">
+                        <label>Сыгранные Матчи:&nbsp;</label>
+                        @foreach (var match in @Model.PlayedMatches)
+                        {
+                            <div class="info-item">
+                                <div class="date">@match.StartDateTime.GetDateString(false)</div>
+                                @match.Player1.FullName vs. @match.Player2.FullName:&nbsp;@match.MatchResultString(Model.GeneralInfo.Id)
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (!@Model.PlannedMatches.Any() && !@Model.PlayedMatches.Any())
+                {
+                    <div>Нет данных</div>
+                }
             </div>
         </div>
     </div>

@@ -91,6 +91,19 @@
     font-size: 2em;
 }
 
+.section-matches .matches:last-child {
+    margin-top: 30px;
+}
+
+.section-matches .info-item {
+    margin: 2px 0 10px 0;
+}
+
+.section-matches .info-item .date {
+    color: #aaa;
+    padding: 0 0 3px 15px;
+}
+
 /* Player Info END */
 
 /* Multiple Select Overrides */

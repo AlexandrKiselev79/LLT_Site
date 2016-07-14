@@ -104,6 +104,15 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
 
         public GenderType Gender { get; set; }
 
+        public string GenderString
+        {
+            get
+            {
+                var genderString = Gender == GenderType.Woman ? "Женский" : "Мужской";
+                return genderString;
+            }
+        }
+
         public decimal Height { get; set; }
 
         public string HeightString

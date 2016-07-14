@@ -56,8 +56,9 @@
 
     var lastRemovedMatchPlayers = {};
     var lastRemovedMatchPlayerIndeces = {};
+    var allPlayers = undefined;
 
-    function genericDropDownEditor(container, options, dataSource) {
+    function genericDropDownEditor(container, options, dataSource, selectedItemId) {
         $('<input required data-text-field="Name" data-value-field="Id" data-bind="value:' + options.field + '"/>')
             .appendTo(container)
             .kendoDropDownList({
@@ -65,6 +66,12 @@
                 dataTextField: "Name",
                 dataValueField: "Id"
             });
+
+        if (selectedItemId) {
+            var dropdown = $(container).find('input').data("kendoDropDownList");
+            dropdown.select(selectedItemId);
+            options.model.Stage = selectedItemId;
+        }
     }
 
     function playerDropDownEditor(container, options, dropDownId) {
@@ -101,7 +108,7 @@
     }
 
     function playerDropDownFiltered(container, options, dropDownId) {
-        var select = $('<select id="' + dropDownId + '" class="player-select"></select>')
+        $('<select id="' + dropDownId + '" class="player-select"></select>')
             .appendTo(container)
             .multipleSelect({
                 filter: true,
@@ -114,22 +121,20 @@
             })
             .closest('td').css('overflow', 'visible');
 
-        $.ajax({
-            url: '/Players',
-            data: JSON.stringify({Model: {},Command: { Page: 0, PageSize: 0 }}),
-            dataType: "json",
-            type: "POST",
-            contentType: 'application/json',
-        }).done(function(response) {
+        getAllPlayers().then(function() {
             var optionsHtml = [];
-            if (response.Data && response.Data.length) {
-                response.Data.forEach(function(player) {
+            if (allPlayers && allPlayers.length) {
+                allPlayers.forEach(function(player) {
                     optionsHtml.push('<option value="' + player.Id + '">' + player.FullName + '</option>');
                 });
             }
             $('#' + dropDownId).html(optionsHtml.join(''));
             $('#' + dropDownId).multipleSelect("refresh");
-            $('#' + dropDownId).multipleSelect('setSelects', []);
+
+            var selectedIds = options.field === 'Player1' && options.model.Player1.Id ? [options.model.Player1.Id] :
+                             options.field === 'Player2' && options.model.Player2.Id ? [options.model.Player2.Id] : [];
+
+            $('#' + dropDownId).multipleSelect('setSelects', selectedIds);
         });
     }
 
@@ -185,6 +190,27 @@
                 theOtherListPlayers.remove(theOtherListPlayer);
             }
         });
+    }
+
+    function getAllPlayers() {
+        var deferred = jQuery.Deferred();
+        if (allPlayers === undefined) {
+            $.ajax({
+                url: '/Players',
+                data: JSON.stringify({Model: {},Command: { Page: 0, PageSize: 0 }}),
+                dataType: "json",
+                type: "POST",
+                contentType: 'application/json',
+            }).done(function (response) {
+                allPlayers = response.Data;
+                deferred.resolve(allPlayers);
+            });
+        }
+        else{
+            deferred.resolve(allPlayers);
+        }
+
+        return deferred;
     }
 
     var playerLevels = [
@@ -436,13 +462,23 @@
             },
             toolbar: ["create"],
             edit: function(e) {
-                if (e.model.isNew()) {
-
+                var a = 1;
+            },
+            save: function(e) {
+                if (e.model.Player1 && e.model.Player2) {
+                    e.container.closest('.k-grid').data('kendoGrid').refresh();
                 }
+            },
+            saveChanges: function(e) {
+                var a = 1;
             },
             cancel: function(e) {
                 var a = 1;
             },
+            dataBound: function(){
+                var a = 1;
+            },
+
             editable: {
                 confirmation: false,
                 mode: "inline"
@@ -489,7 +525,7 @@
                     field: "Stage",
                     title: "Стадия Турнира",
                     editor: function(container, options) {
-                        genericDropDownEditor(container, options, tournamentStages);
+                        genericDropDownEditor(container, options, tournamentStages, 4);
                     },
                     template: function(matchModel) {
                         var stages = tournamentStages.filter(function(item, index) {
