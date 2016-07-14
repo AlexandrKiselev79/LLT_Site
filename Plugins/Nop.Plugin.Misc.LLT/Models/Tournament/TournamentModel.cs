@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Nop.Plugin.Misc.LLT.Enums;
+using Nop.Plugin.Misc.LLT.Models.TennisClub;
 
 namespace Nop.Plugin.Misc.LLT.Models.Tournament
 {
@@ -39,6 +40,8 @@ namespace Nop.Plugin.Misc.LLT.Models.Tournament
         {
             get { return Type.ToString(); }
         }
+
+        public List<TennisClubModel> Clubs { get; set; }
 
         public Dictionary<int, int> Rates { get; set; }
     }

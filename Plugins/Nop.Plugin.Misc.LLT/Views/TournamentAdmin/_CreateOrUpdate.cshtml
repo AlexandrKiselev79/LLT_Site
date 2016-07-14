@@ -320,7 +320,7 @@
                     field: "Id",
                     title: "Игрок",
                     editor: function(container, options) {
-                        playerDropDownEditor(container, options, 'tournamentPlayersList');
+                        playerDropDownFiltered(container, options, 'tournamentMatchPlayer2List');
                     },
                     template: function(dataItem) {
                         return kendo.htmlEncode(dataItem.FullName);
