@@ -116,7 +116,14 @@
                 single: true,
                 placeholder: "Выбор игрока",
                 onClick: function (option) {
-                    options.model[options.field] = parseInt(option.value);
+                    var newPlayerId = parseInt(option.value);
+                    if (options.model.isNew()) {
+                        options.model[options.field] = newPlayerId;
+                    }
+                    else {
+                        options.model[options.field].Id = newPlayerId;
+                    }
+                    options.model.dirty = true;
                 }
             })
             .closest('td').css('overflow', 'visible');
@@ -327,15 +334,19 @@
             },
             toolbar: ["create"],
             edit: function(e) {
-                var a = 1;
+                console.log('grid edit');
             },
             save: function(e) {
-                var a = 1;
+                console.log('grid save');
+            },
+            saveChanges: function(e) {
+                console.log('grid saveChanges');
             },
             cancel: function(e) {
-                var a = 1;
+                console.log('grid cancel');
             },
-            dataBound: function(){
+            dataBound: function(){                
+                console.log('grid dataBound');
                 $('#tournament-players-grid').find(".k-grid-edit").remove();
             },
             editable: "inline",
@@ -462,21 +473,19 @@
             },
             toolbar: ["create"],
             edit: function(e) {
-                var a = 1;
+                console.log('grid edit');
             },
             save: function(e) {
-                if (e.model.Player1 && e.model.Player2) {
-                    e.container.closest('.k-grid').data('kendoGrid').refresh();
-                }
+                console.log('grid save');
             },
             saveChanges: function(e) {
-                var a = 1;
+                console.log('grid saveChanges');
             },
             cancel: function(e) {
-                var a = 1;
+                console.log('grid cancel');
             },
             dataBound: function(){
-                var a = 1;
+                console.log('grid dataBound');
             },
 
             editable: {

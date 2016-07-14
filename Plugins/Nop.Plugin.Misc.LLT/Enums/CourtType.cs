@@ -2,9 +2,9 @@
 {
     public enum CourtType
     {
-        Hard,
-        Grass,
-        Clay,
-        Other
+        Hard = 0,
+        Grass = 1,
+        Clay = 2,
+        Other = 3
     }
 }
