@@ -1,19 +1,43 @@
 ﻿@model TopMenuModel
 @using Nop.Web.Models.Catalog;
 
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                @foreach (var topic in Model.Topics)
+                {
+                    if (!string.IsNullOrEmpty(topic.SeName))
+                    {
+                        <li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="@Url.RouteUrl("HomePage")">@topic.Name</a></li>
+                    }
+                }
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a target="_blank" href="http://vk.com/liga_tennisa">VK</a></li>
+                <li><a target="_blank" href="https://www.facebook.com/pages/%D0%9B%D1%8E%D0%B1%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F-%D0%9B%D0%B8%D0%B3%D0%B0-%D0%A2%D0%B5%D0%BD%D0%BD%D0%B8%D1%81%D0%B0/733428836718712">Facebook</a></li>
+                <li><a target="_blank" href="https://youtube.com%2Fchannel%2FUCwjAj9xIIFKK4Fa77kNG1Yg">YouTube</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
+
+
+
+
 <ul class="top-menu">
-    @foreach (var topic in Model.Topics)
-    {
-        if (!string.IsNullOrEmpty(topic.SeName))
-        {
-            <li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
-        }
-        else
-        {
-            <li><a href="@Url.RouteUrl("HomePage")">@topic.Name</a></li>
-        }
-    }
-    @Html.Widget("header_menu_after")
 </ul>
 @{
     <script type="text/javascript">

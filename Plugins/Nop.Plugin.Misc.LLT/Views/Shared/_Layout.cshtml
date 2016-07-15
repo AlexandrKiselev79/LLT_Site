@@ -2,14 +2,12 @@
     Layout = "~/Views/Shared/_Root.Head.cshtml";
 }
 
-<div class="master-wrapper-page">
-    <div class="header-menu">
+<div id="llt-master-wrapper" class="container-fluid">
+    <div class="llt-header row">
         @Html.Action("TopMenu", "LLTCatalog")
     </div>
-</div>
 
-<div class="main-content">
-    <div class="container-fluid">
+    <div class="llt-main-content row">
         <div id="mainContainer" class="main-container">
             <div class="page-title">
                 <h1>@Html.GetPageTitle(false)</h1>
@@ -17,13 +15,12 @@
             @RenderBody()
         </div>
     </div>
-</div>
 
-<div class="footer" style="position: fixed; bottom: 0">
-    <div class="footer-powered-by" style="position: fixed; bottom: 0">
-        Powered by <a href="http://www.nopcommerce.com/">nopCommerce</a>
-        @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
-            Find more info here http://www.nopcommerce.com/copyrightremoval.aspx*@
+    <div class="llt-footer row" style="position: fixed; bottom: 0">
+        <div class="footer-powered-by" style="position: fixed; bottom: 0">
+            Powered by <a href="http://www.nopcommerce.com/">nopCommerce</a>
+            @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
+                Find more info here http://www.nopcommerce.com/copyrightremoval.aspx*@
+        </div>
     </div>
 </div>
-

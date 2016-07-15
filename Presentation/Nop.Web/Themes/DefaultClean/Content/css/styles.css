@@ -980,6 +980,7 @@ label, label + * {
 }
 .footer-powered-by {
 	margin: 10px 0 0;
+    left: 25px;
 }
 .footer-powered-by a {
 	font-weight: bold;
