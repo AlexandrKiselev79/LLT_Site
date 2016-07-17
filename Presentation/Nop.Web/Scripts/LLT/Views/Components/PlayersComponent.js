@@ -1,15 +1,19 @@
 ﻿function PlayersComponent() {
     var root = {};
 
+    var itemsPerPage = 10;
+
     root.DataLoaded = ko.observable(false);
-    root.AllPlayers = [];
+    root.CurrentPage = ko.observable(0);
+    root.TotalPages = ko.observable(0);
+    var AllPlayers = [];
 
     root.Players = ko.observableArray([]);
     root.Filter = ko.observable('');
     root.Filter.subscribe(function (newValue) {
         var filter = newValue || '';
         if (filter.length > 0) {
-            var filteredPlayers = root.AllPlayers.filter(function (player) {
+            var filteredPlayers = AllPlayers.filter(function (player) {
                 return player.FullName.toLowerCase().indexOf(filter.toLowerCase()) > -1;
             });
             root.Players(filteredPlayers);
@@ -20,13 +24,14 @@
     });
 
     getAllPlayers().done(function (response) {
-        response.Data.forEach(function (player) {
-            player.Age = player.Age && player.Age > 0 ? player.Age : '';
+        response.Data.forEach(function (player, index) {
+            var pageNumber = Math.floor(index / itemsPerPage) + 1;
+            player.PageNumber = pageNumber;
 
-            root.AllPlayers.push(player);
+            AllPlayers.push(player);
         });
 
-        root.AllPlayers.sort(function (player1, player2) {
+        AllPlayers.sort(function (player1, player2) {
             if (player1.FullName > player2.FullName) {
                 return 1;
             }
@@ -37,21 +42,51 @@
         });
 
         root.DataLoaded(true);
-        root.Players(root.AllPlayers);
+        root.CurrentPage(AllPlayers.length > 0 ? 1 : 0);
+        root.TotalPages(Math.ceil(AllPlayers.length / itemsPerPage));
+        showPagedPlayers();
     });
 
     root.clearFilter = function (sender, event) {
-		if(event) {
-			if (event.type === 'click' || event.keyCode === 27) {
-				root.Players(root.AllPlayers);
-				root.Filter('');
-			}
-		}
-		else {
-			root.Players(root.AllPlayers);
-		}
+        if (event) {
+            if (event.type === 'click' || event.keyCode === 27) {
+                showPagedPlayers();
+                root.Filter('');
+            }
+        }
+        else {
+            showPagedPlayers();
+        }
         return true;
     };
+
+    root.pagePrevious = function () {
+        if (root.CurrentPage() > 1) {
+            root.CurrentPage(root.CurrentPage() - 1);
+            showPagedPlayers();
+        }
+    };
+
+    root.pageNext = function () {
+        if (root.CurrentPage() < root.TotalPages()) {
+            root.CurrentPage(root.CurrentPage() + 1);
+            showPagedPlayers();
+        }
+    };
+
+    root.goToFirstPage = function () {
+        if (root.TotalPages()> 0) {
+            root.CurrentPage(1);
+            showPagedPlayers();
+        }
+    };
+
+    function showPagedPlayers() {
+        var players = AllPlayers.filter(function (item) {
+            return itemsPerPage === 0 || item.PageNumber === root.CurrentPage();
+        });
+        root.Players(players);
+    }
 
     function getAllPlayers() {
         var data = {

@@ -1,9 +1,17 @@
-﻿<div id="players-list-wrapper" class="container">
+﻿<div class="load-status" data-bind="visible: !DataLoaded()">
+    Loading players... <img src="/Images/loading.gif" alt="Loading..." />
+</div>
+<div id="players-list-wrapper" class="container" data-bind="visible: DataLoaded">
     <div class="players-filter">
-        <div>Фильтровать по имени:</div>
-        <input type="text" id="playersFilter" placeholder="Start typing to filter players" data-bind="textInput: Filter, event: { keydown: clearFilter }" />
-        <button type="button" id="playersClearFilter" class="btn btn-info" data-bind="click: clearFilter ">Показать всех</button>
+        <input type="text" id="playersFilter" placeholder="Фильтр по имени" data-bind="textInput: Filter, event: { keydown: clearFilter }" />
+        <button type="button" id="playersClearFilter" class="btn btn-info  btn-sm" data-bind="click: clearFilter ">Показать всех</button>
     </div>
+    <div class="players-paging button-group" data-bind="visible: Filter() === ''">
+        <button type="button" class="btn btn-sm btn-default" data-bind="click: pagePrevious">Предыдущая</button>
+        <button type="button" class="btn btn-sm btn-default" data-bind="text: 'Страница ' + CurrentPage() + ' из ' + TotalPages(), click: goToFirstPage()" title="В начало"></button>
+        <button type="button" class="btn btn-sm btn-default" data-bind="click: pageNext">Следующая</button>
+    </div>
+
     <div class="players-list row">
         <table>
             <thead>
@@ -22,13 +30,6 @@
                     </th>
                 </tr>
             </thead>
-            <tbody data-bind="visible: !DataLoaded()">
-                <tr>
-                    <td colspan="4">
-                        Loading players... <img src="/Images/loading.gif" alt="Loading..."/>
-                    </td>
-                </tr>
-            </tbody>
             <tbody data-bind="foreach: { data: Players, as: 'Player' }">
                 <tr>
                     <td>
@@ -48,5 +49,11 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="players-paging button-group" data-bind="visible: Filter() === ''">
+        <button type="button" class="btn btn-sm btn-default" data-bind="click: pagePrevious">Предыдущая</button>
+        <button type="button" class="btn btn-sm btn-default" data-bind="text: 'Страница ' + CurrentPage() + ' из ' + TotalPages(), click: goToFirstPage()" title="В начало"></button>
+        <button type="button" class="btn btn-sm btn-default" data-bind="click: pageNext">Следующая</button>
     </div>
 </div>
