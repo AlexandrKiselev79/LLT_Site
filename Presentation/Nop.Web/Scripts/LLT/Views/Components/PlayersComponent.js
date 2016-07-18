@@ -24,14 +24,9 @@
     });
 
     getAllPlayers().done(function (response) {
-        response.Data.forEach(function (player, index) {
-            var pageNumber = Math.floor(index / itemsPerPage) + 1;
-            player.PageNumber = pageNumber;
+        var players = response.Data;
 
-            AllPlayers.push(player);
-        });
-
-        AllPlayers.sort(function (player1, player2) {
+        players.sort(function (player1, player2) {
             if (player1.FullName > player2.FullName) {
                 return 1;
             }
@@ -39,6 +34,13 @@
                 return -1;
             }
             return 0;
+        });
+
+        players.forEach(function (player, index) {
+            var pageNumber = Math.floor(index / itemsPerPage) + 1;
+            player.PageNumber = pageNumber;
+
+            AllPlayers.push(player);
         });
 
         root.DataLoaded(true);

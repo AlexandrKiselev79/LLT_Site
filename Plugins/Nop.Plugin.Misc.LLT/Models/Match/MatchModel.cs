@@ -22,6 +22,12 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
         public PlayerModel Player1 { get; set; }
         public PlayerModel Player2 { get; set; }
 
+        public PlayerLevel Player1Level { get; set; }
+        public PlayerLevel Player2Level { get; set; }
+
+        public int Player1Ranking { get; set; }
+        public int Player2Ranking { get; set; }
+
         public TournamentStage Stage { get; set; }
 
         public string StageString
@@ -92,7 +98,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
             return false;
         }
 
-        private bool WonInSets(int playerId)
+        public bool WonInSets(int playerId)
         {
             if (SetResults != null)
             {

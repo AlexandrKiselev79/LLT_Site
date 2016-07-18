@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Nop.Plugin.Misc.LLT.Models.Match;
 using Nop.Plugin.Misc.LLT.Models.Tournament;
 
@@ -30,5 +32,21 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
         public int RatingNumber { get; set; }
         // Наивысшая позиция за все время
         public int HighestRatingNumber { get; set; }
+
+        public string StatsVsAll
+        {
+            get
+            {
+                var result = "N/A";
+                if (PlayedMatches.Count > 0)
+                {
+                    var wonMatchesCount = PlayedMatches.Where(m => m.WonInSets(GeneralInfo.Id)).Count();
+                    var winningPercentage = Math.Round((double) wonMatchesCount / PlayedMatches.Count * 100, 1);
+                    result = string.Format("{0}% ({1}/{2})", winningPercentage, wonMatchesCount, PlayedMatches.Count);
+                }
+
+                return result;
+            }
+        }
     }
 }
