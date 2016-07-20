@@ -44,6 +44,7 @@ body .navbar {
 
 #players-list-wrapper .players-paging {
     text-align: center;
+	padding: 10px 0;
 }
 
 .players-list {

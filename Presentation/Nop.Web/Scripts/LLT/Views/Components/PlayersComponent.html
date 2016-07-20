@@ -1,7 +1,7 @@
 ﻿<div class="load-status" data-bind="visible: !DataLoaded()">
     Loading players... <img src="/Images/loading.gif" alt="Loading..." />
 </div>
-<div id="players-list-wrapper" class="container" data-bind="visible: DataLoaded">
+<div id="players-list-wrapper" class="container-fluid" data-bind="visible: DataLoaded">
     <div class="players-filter">
         <input type="text" id="playersFilter" placeholder="Фильтр по имени" data-bind="textInput: Filter, event: { keydown: clearFilter }" />
         <button type="button" id="playersClearFilter" class="btn btn-info  btn-sm" data-bind="click: clearFilter ">Показать всех</button>
