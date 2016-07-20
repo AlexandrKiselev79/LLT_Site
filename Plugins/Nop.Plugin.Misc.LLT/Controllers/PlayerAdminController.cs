@@ -90,10 +90,17 @@ namespace Nop.Plugin.Misc.LLT.Controllers
 
         //delete
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int playerId)
         {
-           
-            return RedirectToAction("List");
+            var player = _playerService.GetById(playerId);
+            if (player == null)
+                return Json(null);
+            else
+            {
+                player.Deleted = true;
+                _playerService.Update(player);
+                return Json(player);
+            }
         }
     }
 }

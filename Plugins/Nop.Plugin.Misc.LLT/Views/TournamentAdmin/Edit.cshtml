@@ -18,5 +18,22 @@
             <span id="tournament-delete" class="k-button">Удалить</span>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#tournament-delete').on('click', function () {
+                var data = addAntiForgeryToken({});
+
+                $.ajax({
+                    url: "@Html.Raw(Url.Action("Delete", "TournamentAdmin", new { tournamentId = Model.GeneralInfo.Id }))",
+                    data: data,
+                    dataType: "json",
+                    type: "POST",
+                    }).done(function (response) {
+                        window.location.href = "@Html.Raw(Url.Action("List", "TournamentAdmin"))";
+                    });
+            });
+        });
+    </script>
+
     @Html.Partial("_CreateOrUpdate", Model)
 }

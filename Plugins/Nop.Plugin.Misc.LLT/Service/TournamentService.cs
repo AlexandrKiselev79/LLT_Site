@@ -145,26 +145,26 @@ namespace Nop.Plugin.Misc.LLT.Service
 
         public List<Tournament> GetAll()
         {
-            return _tournamentRepository.Table.ToList();
+            return _tournamentRepository.Table.Where(t => !t.Deleted).ToList();
         }
 
         public List<Tournament> GetAllInPeriod(DateTime startDate, DateTime endDate)
         {
-            return _tournamentRepository.Table.Where(t => t.StartDate <= endDate || t.EndDate >= startDate).ToList();
+            return _tournamentRepository.Table.Where(t => !t.Deleted && t.StartDate <= endDate || t.EndDate >= startDate).ToList();
         }
 
         public List<Tournament> GetAll(TournamentType searchType, string searchName)
         {
-            var tournaments = _tournamentRepository.Table;
+            var tournaments = _tournamentRepository.Table.Where(t => !t.Deleted);
 
             if (!searchType.Equals(TournamentType.All))
             {
-                tournaments = tournaments.Where(t => t.Type == searchType);
+                tournaments = tournaments.Where(t => !t.Deleted && t.Type == searchType);
             }
 
             if (!string.IsNullOrEmpty(searchName))
             {
-                tournaments = tournaments.Where(t => t.Name.ToLower().Contains(searchName.Trim().ToLower()));
+                tournaments = tournaments.Where(t => !t.Deleted && t.Name.ToLower().Contains(searchName.Trim().ToLower()));
             }
 
             return tournaments.ToList();
