@@ -135,8 +135,8 @@ namespace Nop.Plugin.Misc.LLT.Service
             var details = new TournamentDetailsModel
             {
                 GeneralInfo = Mapper.Map<Tournament, TournamentModel>(_tournamentRepository.GetById(tournamentId)),
-                PlayedMatches = matches.Where(m => m.SetResults != null && m.SetResults.Any() && !m.Deleted).Select(Mapper.Map<Match, MatchModel>).ToList(),
-                PlannedMatches = matches.Where(m => (m.SetResults == null || !m.SetResults.Any()) && !m.Deleted).Select(Mapper.Map<Match, MatchModel>).ToList(),
+                PlayedMatches = matches.Where(m => !m.Deleted && MatchIsCompleted(m)).Select(Mapper.Map<Match, MatchModel>).ToList(),
+                PlannedMatches = matches.Where(m => !m.Deleted && !MatchIsCompleted(m)).Select(Mapper.Map<Match, MatchModel>).ToList(),
                 Players = players
             };
 
@@ -168,6 +168,20 @@ namespace Nop.Plugin.Misc.LLT.Service
             }
 
             return tournaments.ToList();
+        }
+
+        private bool MatchIsCompleted(Match match)
+        {
+            var isCompleted = match.WinnerId != 0;
+            if (!isCompleted && match.SetResults != null && match.SetResults.Any())
+            {
+                var player1Sets = match.SetResults.Where(r => r.Player1Games > r.Player2Games).Count();
+                var player2Sets = match.SetResults.Where(r => r.Player1Games < r.Player2Games).Count();
+
+                // TODO Учесть результат для тайбрейка
+                isCompleted = match.SetResults.All(r => r.IsCompleted()) && match.SetResults.Count > 1 && Math.Abs(player1Sets - player2Sets) >= 1;
+            }
+            return isCompleted;
         }
     }
 }

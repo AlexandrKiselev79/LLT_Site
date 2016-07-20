@@ -15,6 +15,15 @@ namespace Nop.Plugin.Misc.LLT.Data
             HasRequired(r => r.Player1);
             HasRequired(r => r.Player2);
 
+            Property(m => m.Player1Level);
+            Property(m => m.Player2Level);
+
+            Property(m => m.Player1Ranking);
+            Property(m => m.Player2Ranking);
+
+            Property(m => m.CompletionReason);
+            Property(m => m.WinnerId);
+
             HasMany(m => m.SetResults);
             HasOptional(o => o.TieBreakResult);
 

@@ -52,6 +52,7 @@
 
         initPlayersGrid();
         initMatchesGrid();
+        initResultsGrid();
     });
 
     var lastRemovedMatchPlayers = {};
@@ -67,44 +68,11 @@
                 dataValueField: "Id"
             });
 
-        if (selectedItemId) {
+        if (options.model.isNew() && selectedItemId) {
             var dropdown = $(container).find('input').data("kendoDropDownList");
             dropdown.select(selectedItemId);
             options.model.Stage = selectedItemId;
         }
-    }
-
-    function playerDropDownEditor(container, options, dropDownId) {
-        $('<input id="' + dropDownId + '" required data-text-field="FullName" data-value-field="Id" data-bind="value:' + options.field + '"/>')
-        .appendTo(container)
-        .kendoDropDownList({
-            autoBind: false,
-            optionLabel: "Select player...",
-            dataSource: {
-                serverFiltering: true,
-                transport: {
-                    read: {
-                        url: '/Players',
-                        dataType: "json",
-                        type: "POST",
-                    }
-                },
-                schema: {
-                    data: "Data",
-                    total: "Total"
-                },
-                requestEnd: function(e) {
-                }
-            },
-            change: function(e) {
-                filterTournamentMatchPlayersList(e.sender.wrapper);
-            },
-            select: null,
-            dataBound: function(e) {
-                filterTournamentPlayersList(e.sender.wrapper);
-            },
-            open: null
-        });
     }
 
     function playerDropDownFiltered(container, options, dropDownId) {
@@ -143,6 +111,20 @@
 
             $('#' + dropDownId).multipleSelect('setSelects', selectedIds);
         });
+    }
+
+    function filterPlayersList(dropDownId) {
+        var hiddenIds = [];
+
+        var select =$('#' + dropDownId);
+        if(dropDownId === 'tournamentPlayerList'){
+
+        }
+        else if (dropDownId.indexOf('tournamentMatchPlayer') === 0){
+
+        }
+
+        hiddenIds.forEach();
     }
 
     function filterTournamentPlayersList($dropDownWrapper) {
@@ -218,6 +200,111 @@
         }
 
         return deferred;
+    }
+
+    function completeMatch(triggerElement, title, okCallback) {
+        if ($(triggerElement).parent().find('.popover').length === 0) {
+            var popupHtml = [];
+            popupHtml.push('    <div class="content">');
+            popupHtml.push('        <div class="form-group">');
+            popupHtml.push('            <input type="text" class="form-control" placeholder=""/>');
+            popupHtml.push('        </div>');
+            popupHtml.push('        <div class="form-group">');
+            popupHtml.push('            <label><input type="radio" class="form-control" name="winner" value="Player1" checked="checked"/>Player 1</label>');
+            popupHtml.push('            <label><input type="radio" class="form-control" name="winner" value="Player2"/>Player 2</label>');
+            popupHtml.push('        </div>');
+            popupHtml.push('        <span class="validation-message" style="display:none;color:red;">Заполните обязательное поле</span>');
+            popupHtml.push('        <div class="controls"><button type="button" class="btn btn-default complete">Завершить</button></div>');
+            popupHtml.push('    </div>');
+
+            $(triggerElement).popover({
+                html: true,
+                title: function () {
+                    return '<div class="head">' + title + '</div><span style="position:absolute;right:10px;top:9px;"><button type="button" onclick="this.parentNode.parentNode.parentNode.remove();" class="btn btn-xs">X</button></span>';
+                },
+                content: function () {
+                    return popupHtml.join('');
+                }
+            });
+        }
+        $('.popover').remove();
+        $(triggerElement).popover('show');
+        $(triggerElement).parent().find('.popover input[type=text]').focus();
+        $(triggerElement).parent().find('.popover button.complete').on('click', function() {
+            var completionReason = $(triggerElement).parent().find('.popover input').val();
+            var winner = $(triggerElement).parent().find('.popover input[type=radio]:checked').val();
+
+            if (completionReason && completionReason.length > 0 && winner) {
+                $(triggerElement).parent().find('.popover .validation-message').hide();
+
+                var dataId = $(triggerElement).closest('tr[data-uid]').attr('data-uid');
+                var data = $(triggerElement).closest('.k-grid').data('kendoGrid').dataSource.data();
+                var models = data.filter(function(dataItem) {
+                    return dataItem.uid === dataId;
+                });
+                if (models.length === 1) {
+                    var match = {
+                        Id: models[0].Id,
+                        CompletionReason: completionReason,
+                        WinnerId: models[0][winner].Id
+                    };
+
+                    var data = addAntiForgeryToken(match);
+
+                    $.ajax({
+                        url: "@Html.Raw(Url.Action("MatchComplete", "TournamentAdmin", new { tournamentId = Model.GeneralInfo.Id }))",
+                        global: false,
+                        data: data,
+                        dataType: "json",
+                        type: "POST",
+                    }).done(function (response) {
+                        okCallback && okCallback();
+                        console.log('Match Completed');
+                    });
+
+                    $(triggerElement).popover('hide');
+                }
+            }
+            else {
+                $(triggerElement).parent().find('.popover .validation-message').show();
+            }
+        });
+    }
+
+    function playerIsWinner(match, player) {
+        var isWinner = false;
+        if (match.WinnerId === player.Id) {
+            isWinner = true;
+        }
+        else if(match.SetResults && match.SetResults.length > 0){
+            var completedCount = 0;
+            var player1Sets = 0;
+            var player2Sets = 0;
+            for (var i = 0; i < match.SetResults.length; i++) {
+                var setResult = match.SetResults[i];
+                var setCompleted = (Math.abs(setResult.Player1TieBreak - setResult.Player2TieBreak) >= 2 && (setResult.Player1TieBreak >= 10 || setResult.Player2TieBreak >= 10)) ||
+                                    (setResult.Player1Games + setResult.Player2Games == 13 || ((setResult.Player1Games >= 6 || setResult.Player2Games >= 6) && Math.abs(setResult.Player1Games - setResult.Player2Games) >= 2));
+                if (setCompleted) {
+                    completedCount++;
+                    if (setResult.Player1TieBreak > setResult.Player2TieBreak || setResult.Player1Games > setResult.Player2Games) {
+                        player1Sets++;    
+                    }
+                    else if(setResult.Player1TieBreak < setResult.Player2TieBreak || setResult.Player1Games < setResult.Player2Games){
+                        player2Sets++;    
+                    }
+                }
+            }
+            var matchCompleted = completedCount === match.SetResults.length && match.SetResults.length > 1;
+            if (matchCompleted) {
+                if (player1Sets > player2Sets && match.Player1.Id === player.Id) {
+                    isWinner = true;
+                }
+                else if(player1Sets < player2Sets && match.Player2.Id === player.Id) {
+                    isWinner = true;
+                }
+            }
+        }
+        return isWinner;
     }
 
     var playerLevels = [
@@ -345,11 +432,14 @@
             cancel: function(e) {
                 console.log('grid cancel');
             },
-            dataBound: function(){                
+            dataBound: function(){
                 console.log('grid dataBound');
                 $('#tournament-players-grid').find(".k-grid-edit").remove();
             },
-            editable: "inline",
+            editable: {
+                confirmation: true,
+                mode: "inline"
+            },
             scrollable: false,
             sortable: true,
             columns: [
@@ -357,7 +447,7 @@
                     field: "Id",
                     title: "Игрок",
                     editor: function(container, options) {
-                        playerDropDownFiltered(container, options, 'tournamentMatchPlayer2List');
+                        playerDropDownFiltered(container, options, 'tournamentPlayerList');
                     },
                     template: function(dataItem) {
                         return kendo.htmlEncode(dataItem.FullName);
@@ -370,7 +460,10 @@
                     width: 200
                 },
                 {
-                    command: ["destroy", "edit"],
+                    command: [
+                        { name: "edit", text: 'Изменить' },
+                        { name: "destroy", text: 'Удалить' },
+                    ],
                     width: 30
                 }
             ]
@@ -389,24 +482,29 @@
                         data: addAntiForgeryToken
                     },
                     create: {
-                        url: function(match) {
-                            var url = "@Html.Raw(Url.Action("MatchInsert", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))"
-                                + '&player1Id=' + match.Player1 + '&player2Id=' + match.Player2 + '&result=' + (match.MatchResultDisplay || '') + '&stage=' + match.Stage;
+                        url: function(matchData) {
+                            var url = "@Html.Raw(Url.Action("MatchInsert", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))";
                             return url;
                         },
                         type: "POST",
                         dataType: "json",
-                        data: addAntiForgeryToken
+                        data: function(data) {
+                            data.Player1 = { Id: data.Player1};
+                            data.Player2 = { Id: data.Player2};
+
+                            return addAntiForgeryToken(data);
+                        }
                     },
                     update: {
                         url: function(match) {
-                            var url = "@Html.Raw(Url.Action("MatchUpdate", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))"
-                                + '&matchId=' + match.Id + '&player1Id=' + match.Player1.Id + '&player2Id=' + match.Player2.Id + '&result=' + (match.MatchResultDisplay || '') + '&stage=' + match.Stage;
+                            var url = "@Html.Raw(Url.Action("MatchUpdate", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))";
                             return url;
                         },
                         type: "POST",
                         dataType: "json",
-                        data: addAntiForgeryToken
+                        data: function(data) {
+                            return addAntiForgeryToken(data);
+                        }
                     },
                     destroy: {
                         url: function(match) {
@@ -429,31 +527,36 @@
                             Id: { editable: false, type: "number" },
                             Player1: { },
                             Player2: { },
-                            MatchResultDisplay: { editable: true, validation: {
-                                required: false,
-                                validation: function (input) {
-                                    if (input.is("[name='MatchResultDisplay']") && input.val() != "") {
-                                        var matchResultRegex = /^(\d\d?-\d\d?\s?)*$/;
-                                        if (matchResultRegex.test(input.val())) {
-                                            return true;
+                            MatchResultDisplay: {
+                                editable: true,
+                                validation: {
+                                    required: false,
+                                    validation: function (input) {
+                                        if (input.is("[name='MatchResultDisplay']") && input.val() != "") {
+                                            var matchResultRegex = /^(\d\d?-\d\d?\s?)*$/;
+                                            if (matchResultRegex.test(input.val())) {
+                                                return true;
+                                            }
+                                            else {
+                                                alert('Результат матча должен содержать как минимум результат одного сета (сет может быть неполным)');
+                                                return false;
+                                            }
                                         }
-                                        else {
-                                            alert('Результат матча должен содержать как минимум результат одного сета (сет может быть неполным)');
-                                            return false;
-                                        }
+                                        return true;
                                     }
-                                    return true;
                                 }
-                            }
                             },
                             Stage: { editable: true, type: "number" },
-                            //StartDateString: { editable: true }
+                            StartDateString: { editable: false }
                         }
                     }
                 },
                 requestEnd: function(e) {
                     if (e.type == "create" || e.type == "update") {
                         this.read();
+                    }
+                    if (e.type == "update") {
+                        $("#tournament-results-grid").data('kendoGrid').dataSource.read();
                     }
                 },
                 error: function(e) {
@@ -489,7 +592,7 @@
             },
 
             editable: {
-                confirmation: false,
+                confirmation: true,
                 mode: "inline"
             },
             scrollable: false,
@@ -504,6 +607,10 @@
                         style: "display:none;"
                     },
                     width: 200
+                },
+                {
+                    field: "StartDateString",
+                    title: "Дата",
                 },
                 {
                     field: "Player1",
@@ -544,20 +651,168 @@
                         return stageDisplay;
                     },
                 },
-                //{
-                //    field: "StartDateString",
-                //    title: "Дата",
-                //},
                 {
-                    command: [
+                    command:  [
                         {
-                            name: "edit",
-                            text: "@T("Admin.Common.Edit")"
+                            name: "complete",
+                            text: 'Завершить',
+                            click: function(e) {
+                                completeMatch(e.target, 'Причина окончания', function() {
+                                    $("#tournament-matches-grid").data('kendoGrid').dataSource.read();
+                                    $("#tournament-results-grid").data('kendoGrid').dataSource.read();
+                                });
+                            }
                         },
-                        {
-                            name: "destroy",
-                            text: "@T("Admin.Common.Delete")"
+                        { name: "edit", text: 'Изменить' },
+                        { name: "destroy", text: 'Удалить' },
+                    ],
+                }
+            ]
+        });
+    }
+
+
+
+    function initResultsGrid() {
+        $("#tournament-results-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Html.Raw(Url.Action("ResultsList", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))",
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors",
+                    model: {
+                        id: "Id",
+                        fields: {
+                            Id: { editable: false, type: "number" },
+                            Player1: { },
+                            Player2: { },
+                            MatchResultDisplay: { editable: false },
+                            Stage: { editable: false, type: "number" },
+                            StartDateString: { editable: false }
                         }
+                    }
+                },
+                requestEnd: function(e) {
+                    if (e.type == "create" || e.type == "update") {
+                        this.read();
+                    }
+                },
+                error: function(e) {
+                    //display_kendoui_grid_error(e);
+                    // Cancel the changes
+                    this.cancelChanges();
+                },
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            pageable: {
+                refresh: true,
+                numeric: false,
+                previousNext: false,
+                info: false
+            },
+            edit: function(e) {
+                console.log('grid edit');
+            },
+            save: function(e) {
+                console.log('grid save');
+            },
+            saveChanges: function(e) {
+                console.log('grid saveChanges');
+            },
+            cancel: function(e) {
+                console.log('grid cancel');
+            },
+            dataBound: function(){
+                console.log('grid dataBound');
+            },
+
+            editable: {
+                confirmation: true,
+                mode: "inline"
+            },
+            scrollable: false,
+            columns: [
+                {
+                    field: "Id",
+                    title: "Матч",
+                    attributes: {
+                        style: "display:none;"
+                    },
+                    headerAttributes: {
+                        style: "display:none;"
+                    },
+                    width: 200
+                },
+                {
+                    field: "StartDateString",
+                    title: "Дата",
+                },
+                {
+                    field: "Player1",
+                    title: "Игрок 1",
+                    editor: function(container, options) {
+                        playerDropDownFiltered(container, options, 'tournamentResultPlayer1List');
+                    },
+                    template: function(match) {
+                        var classes = '';
+                        if(playerIsWinner(match, match.Player1)) {
+                            classes += "winner";
+                        }
+
+                        var html = '<span class="' + classes + '">' + match.Player1.FullName + '</span>';
+                        return html;
+                    },
+                    width: 200
+                },
+                {
+                    field: "Player2",
+                    title: "Игрок 2",
+                    editor: function(container, options) {
+                        playerDropDownFiltered(container, options, 'tournamentResultPlayer2List');
+                    },
+                    template: function(match) {
+                        var classes = '';
+                        if(playerIsWinner(match, match.Player2)) {
+                            classes += "winner";
+                        }
+
+                        var html = '<span class="' + classes + '">' + match.Player2.FullName + '</span>';
+                        return html;
+                    },
+                },
+                {
+                    field: "MatchResultDisplay",
+                    title: "Результат",
+                },
+                {
+                    field: "Stage",
+                    title: "Стадия Турнира",
+                    editor: function(container, options) {
+                        genericDropDownEditor(container, options, tournamentStages, 4);
+                    },
+                    template: function(matchModel) {
+                        var stages = tournamentStages.filter(function(item, index) {
+                            return item.Id == matchModel.Stage;
+                        });
+                        var stageDisplay = stages.length === 1? stages[0].Name : 'N/A';
+                        return stageDisplay;
+                    },
+                },
+                {
+                    command:  [
+                        //{ name: "edit", text: 'Изменить' },
+                        //{ name: "destroy", text: 'Удалить' },
                     ],
                 }
             ]
@@ -632,7 +887,7 @@ else
 {
 if (Model.GeneralInfo.Id > 0)
 {
-
+        <div id="tournament-results-grid"></div>
 }
 else
 {

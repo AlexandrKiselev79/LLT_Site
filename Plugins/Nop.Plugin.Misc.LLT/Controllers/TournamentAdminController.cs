@@ -145,10 +145,10 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         }
 
         [HttpPost]
-        public ActionResult MatchesList(DataSourceRequest command, int tournamentId)
+        public ActionResult ResultsList(DataSourceRequest command, int tournamentId)
         {
             var tournamentDetails = _tournamentService.GetDetailsById(tournamentId);
-            var matches = tournamentDetails.PlannedMatches.Concat(tournamentDetails.PlayedMatches).ToList();
+            var matches = tournamentDetails.PlayedMatches.ToList();
 
             var gridModel = new DataSourceResult
             {
@@ -160,35 +160,50 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         }
 
         [HttpPost]
-        public ActionResult MatchInsert(int tournamentId, int? player1Id, int? player2Id, string result, TournamentStage stage)
+        public ActionResult MatchesList(DataSourceRequest command, int tournamentId)
+        {
+            var tournamentDetails = _tournamentService.GetDetailsById(tournamentId);
+            var matches = tournamentDetails.PlannedMatches.ToList();
+
+            var gridModel = new DataSourceResult
+            {
+                Data = matches,
+                Total = matches.Count
+            };
+
+            return Json(gridModel);
+        }
+
+        [HttpPost]
+        public ActionResult MatchInsert(int tournamentId, MatchModel match)
         {
             var tournament = _tournamentService.GetById(tournamentId);
-
-            var match = new Match();
-            match.Club = Mapper.Map<TennisClubModel, TennisClub>(_tennisClubService.GetAll().First());
-            match.Club.Address = _addressService.GetById(2);
-            match.Player1 = _playerService.GetById(player1Id.Value);
-            match.Player2 = _playerService.GetById(player2Id.Value);
-            match.Stage = stage;
-
-            ParseMatchResult(match, result);
-
-            _tournamentService.AddMatch(tournament, match);
+            
+            var newMatch = new Match();
+            newMatch.Club = Mapper.Map<TennisClubModel, TennisClub>(_tennisClubService.GetAll().First());
+            newMatch.Club.Address = _addressService.GetById(2);
+            newMatch.Player1 = _playerService.GetById(match.Player1.Id);
+            newMatch.Player2 = _playerService.GetById(match.Player2.Id);
+            newMatch.Stage = match.Stage;
+            
+            ParseMatchResult(newMatch, match.MatchResultDisplay);
+            
+            _tournamentService.AddMatch(tournament, newMatch);
             return Json(tournament);
         }
 
         [HttpPost]
-        public ActionResult MatchUpdate(int tournamentId, int? matchId, int? player1Id, int? player2Id, string result, TournamentStage stage)
+        public ActionResult MatchUpdate(int tournamentId, MatchModel match)
         {
             var tournament = _tournamentService.GetById(tournamentId);
-            var match = _tournamentService.GetMatchById(tournamentId, matchId.Value);
-            match.Player1 = _playerService.GetById(player1Id.Value);
-            match.Player2 = _playerService.GetById(player2Id.Value);
-            match.Stage = stage;
-
-            ParseMatchResult(match, result);
-
-            _tournamentService.UpdateMatch(tournament, match);
+            var updatedMatch = _tournamentService.GetMatchById(tournamentId, match.Id);
+            updatedMatch.Player1 = _playerService.GetById(match.Player1.Id);
+            updatedMatch.Player2 = _playerService.GetById(match.Player2.Id);
+            updatedMatch.Stage = match.Stage;
+            
+            ParseMatchResult(updatedMatch, match.MatchResultDisplay);
+            
+            _tournamentService.UpdateMatch(tournament, updatedMatch);
             return Json(tournament);
         }
 
@@ -200,6 +215,18 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             match.Deleted = true;
 
             _tournamentService.UpdateMatch(tournament, match);
+            return Json(tournament);
+        }
+
+        [HttpPost]
+        public ActionResult MatchComplete(int tournamentId, MatchModel match)
+        {
+            var tournament = _tournamentService.GetById(tournamentId);
+            var updatedMatch = _tournamentService.GetMatchById(tournamentId, match.Id);
+            updatedMatch.CompletionReason = match.CompletionReason;
+            updatedMatch.WinnerId = match.WinnerId;
+
+            _tournamentService.UpdateMatch(tournament, updatedMatch);
             return Json(tournament);
         }
 

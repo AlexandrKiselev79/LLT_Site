@@ -11,6 +11,10 @@ namespace Nop.Plugin.Misc.LLT.Domain
         {
             StartDateTime = DateTime.UtcNow;
             IsTournamentMatch = true;
+
+            Player1Level = PlayerLevel.All;
+            Player2Level = PlayerLevel.All;
+
             Deleted = false;
         }
         // Матч турнира или вызова
@@ -19,6 +23,16 @@ namespace Nop.Plugin.Misc.LLT.Domain
         public virtual Player Player1 { get; set; }
         // Игрок 2
         public virtual Player Player2 { get; set; }
+
+        public PlayerLevel Player1Level { get; set; }
+        public PlayerLevel Player2Level { get; set; }
+
+        public int Player1Ranking { get; set; }
+        public int Player2Ranking { get; set; }
+        
+        public string CompletionReason { get; set; }
+        public int WinnerId { get; set; }
+
         // Результаты в сетах
         public virtual List<SetResult> SetResults { get; set; }
         // Результаты решающего тайбрека

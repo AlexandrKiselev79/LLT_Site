@@ -115,6 +115,25 @@ body .navbar {
 
 /* Player Info END */
 
+/* Admin */
+/* Tournament Admin */
+#tournament-matches-grid .popover input, #tournament-matches-grid .popover button {
+    width: inherit;
+    height: inherit;
+    padding: inherit;
+}
+
+#tournament-matches-grid .popover button {
+    padding: inherit;
+}
+
+#tournament-results-grid .winner {
+    background: url('/Administration/Content/images/ico-system.png') right -1px no-repeat;
+    padding-right: 20px;
+}
+
+/* Admin END */
+
 /* Multiple Select Overrides */
 .player-select + .ms-parent .ms-drop {
     width: 200px;

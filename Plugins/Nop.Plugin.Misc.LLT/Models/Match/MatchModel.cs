@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Enums;
@@ -11,7 +12,8 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
 {
     public class MatchModel
     {
-        public MatchModel() {
+        public MatchModel()
+        {
             this.Stage = TournamentStage.Group;
         }
 
@@ -28,6 +30,9 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
         public int Player1Ranking { get; set; }
         public int Player2Ranking { get; set; }
 
+        public string CompletionReason { get; set; }
+        public int WinnerId { get; set; }
+
         public TournamentStage Stage { get; set; }
 
         public string StageString
@@ -40,28 +45,45 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
 
         public string MatchResultString(int playerId)
         {
-            if (SetResults == null) return string.Empty;
             var result = new StringBuilder();
-            foreach (var setResult in SetResults)
+
+            if (SetResults != null && SetResults.Any())
             {
-                result.Append(setResult.Player1.Id == playerId
-                    ? string.Format("{0}-{1} ", setResult.Player1Games, setResult.Player2Games)
-                    : string.Format("{0}-{1} ", setResult.Player2Games, setResult.Player1Games));
+                foreach (var setResult in SetResults)
+                {
+                    result.Append(setResult.Player1.Id == playerId
+                        ? string.Format("{0}-{1} ", setResult.Player1Games, setResult.Player2Games)
+                        : string.Format("{0}-{1} ", setResult.Player2Games, setResult.Player1Games));
+                }
+
+                if (TieBreakResult != null)
+                    result.Append(TieBreakResult.Player1.Id == playerId
+                        ? string.Format("{0}-{1} ", TieBreakResult.Player1TieBreak, TieBreakResult.Player2TieBreak)
+                        : string.Format("{0}-{1} ", TieBreakResult.Player2TieBreak, TieBreakResult.Player1TieBreak));
             }
 
-            if (TieBreakResult != null)
-                result.Append(TieBreakResult.Player1.Id == playerId
-                    ? string.Format("{0}-{1} ", TieBreakResult.Player1TieBreak, TieBreakResult.Player2TieBreak)
-                    : string.Format("{0}-{1} ", TieBreakResult.Player2TieBreak, TieBreakResult.Player1TieBreak));
-
+            if (WinnerId > 0)
+            {
+                result.AppendFormat(" ({0})", CompletionReason);
+            }
             return result.ToString();
         }
 
+        private string matchResultDisplay;
         public string MatchResultDisplay
         {
             get
             {
+                if (!string.IsNullOrEmpty(matchResultDisplay))
+                {
+                    return matchResultDisplay;
+                }
+
                 return MatchResultString(Player1.Id);
+            }
+            set
+            {
+                matchResultDisplay = value;
             }
         }
 
@@ -78,7 +100,8 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
             {
                 return this.StartDateTime.GetDateString(true);
             }
-            set {
+            set
+            {
                 this.StartDateTime.SetDateString(value);
             }
         }

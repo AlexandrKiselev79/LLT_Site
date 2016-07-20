@@ -28,5 +28,15 @@ namespace Nop.Plugin.Misc.LLT.Domain
             this.Player1TieBreak = setResult.Player1TieBreak;
             this.Player2TieBreak = setResult.Player2TieBreak;
         }
+
+        internal bool IsCompleted()
+        {
+            var isCompleted = Math.Abs(Player1TieBreak - Player2TieBreak) >= 2 && (Player1TieBreak >= 10 || Player2TieBreak >= 10);
+            if (!isCompleted)
+            {
+                isCompleted = Player1Games + Player2Games == 13 || ((Player1Games >= 6 || Player2Games >= 6) && Math.Abs(Player1Games - Player2Games) >= 2);
+            }
+            return isCompleted;
+        }
     }
 }
