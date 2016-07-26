@@ -10,7 +10,7 @@ namespace Nop.Plugin.Misc.LLT.Abstracts
         void Update(TennisClub club);
         void Delete(TennisClub club);
 
-        TennisClubModel GetById(int clubId);
+        TennisClub GetById(int clubId);
         List<TennisClubModel> GetAll();
     }
 }

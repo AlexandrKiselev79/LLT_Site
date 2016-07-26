@@ -33,9 +33,9 @@ namespace Nop.Plugin.Misc.LLT.Service
             _tennisClubRepository.Update(club);
         }
 
-        public TennisClubModel GetById(int clubId)
+        public TennisClub GetById(int clubId)
         {
-            return Mapper.Map<TennisClub, TennisClubModel>(_tennisClubRepository.GetById(clubId));
+            return _tennisClubRepository.GetById(clubId);
         }
 
         public List<TennisClubModel> GetAll()

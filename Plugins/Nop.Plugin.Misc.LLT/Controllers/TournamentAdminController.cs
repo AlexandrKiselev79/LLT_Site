@@ -91,7 +91,8 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             var tournament = _tournamentService.GetById(tournamentId);
             if (tournament == null)
                 return Json(null);
-            else {
+            else
+            {
                 tournament.Deleted = true;
                 _tournamentService.Update(tournament);
                 return Json(tournament);
@@ -174,16 +175,16 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         public ActionResult MatchInsert(int tournamentId, MatchModel match)
         {
             var tournament = _tournamentService.GetById(tournamentId);
-            
+
             var newMatch = new Match();
-            newMatch.Club = Mapper.Map<TennisClubModel, TennisClub>(_tennisClubService.GetAll().First());
+            newMatch.Club = _tennisClubService.GetById(3);// Mapper.Map<TennisClubModel, TennisClub>(_tennisClubService.GetAll().First());
             newMatch.Club.Address = _addressService.GetById(2);
             newMatch.Player1 = _playerService.GetById(match.Player1.Id);
             newMatch.Player2 = _playerService.GetById(match.Player2.Id);
             newMatch.Stage = match.Stage;
-            
+
             ParseMatchResult(newMatch, match.MatchResultDisplay);
-            
+
             _tournamentService.AddMatch(tournament, newMatch);
             return Json(tournament);
         }
@@ -196,9 +197,9 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             updatedMatch.Player1 = _playerService.GetById(match.Player1.Id);
             updatedMatch.Player2 = _playerService.GetById(match.Player2.Id);
             updatedMatch.Stage = match.Stage;
-            
+
             ParseMatchResult(updatedMatch, match.MatchResultDisplay);
-            
+
             _tournamentService.UpdateMatch(tournament, updatedMatch);
             return Json(tournament);
         }
