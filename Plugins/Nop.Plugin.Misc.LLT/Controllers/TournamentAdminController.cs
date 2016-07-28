@@ -8,6 +8,7 @@ using Nop.Plugin.Misc.LLT.Abstracts;
 using Nop.Plugin.Misc.LLT.Domain;
 using Nop.Plugin.Misc.LLT.Enums;
 using Nop.Plugin.Misc.LLT.Extensions;
+using Nop.Plugin.Misc.LLT.Infrastructure;
 using Nop.Plugin.Misc.LLT.Models.Match;
 using Nop.Plugin.Misc.LLT.Models.Player;
 using Nop.Plugin.Misc.LLT.Models.TennisClub;
@@ -145,7 +146,7 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         public ActionResult ResultsList(DataSourceRequest command, int tournamentId)
         {
             var tournamentDetails = _tournamentService.GetDetailsById(tournamentId);
-            var matches = tournamentDetails.PlayedMatches.ToList();
+            var matches = tournamentDetails.PlayedMatches.OrderBy(m => m.Stage).ToList();
 
             var gridModel = new DataSourceResult
             {
@@ -160,7 +161,7 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         public ActionResult MatchesList(DataSourceRequest command, int tournamentId)
         {
             var tournamentDetails = _tournamentService.GetDetailsById(tournamentId);
-            var matches = tournamentDetails.PlannedMatches.ToList();
+            var matches = tournamentDetails.PlannedMatches.OrderBy(m => m.Stage).ToList();
 
             var gridModel = new DataSourceResult
             {
@@ -183,6 +184,15 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             newMatch.Player2 = _playerService.GetById(match.Player2.Id);
             newMatch.Stage = match.Stage;
 
+            if (match.StartDateTime > Constants.MinimalSqlDate)
+            {
+                newMatch.StartDateTime = match.StartDateTime;
+            }
+            else
+            {
+                newMatch.StartDateTime = Constants.MinimalSqlDate;
+            }
+
             ParseMatchResult(newMatch, match.MatchResultDisplay);
 
             _tournamentService.AddMatch(tournament, newMatch);
@@ -197,6 +207,15 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             updatedMatch.Player1 = _playerService.GetById(match.Player1.Id);
             updatedMatch.Player2 = _playerService.GetById(match.Player2.Id);
             updatedMatch.Stage = match.Stage;
+
+            if (match.StartDateTime > Constants.MinimalSqlDate)
+            {
+                updatedMatch.StartDateTime = match.StartDateTime;
+            }
+            else
+            {
+                updatedMatch.StartDateTime = Constants.MinimalSqlDate;
+            }
 
             ParseMatchResult(updatedMatch, match.MatchResultDisplay);
 

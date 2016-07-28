@@ -86,7 +86,7 @@
                 onClick: function (option) {
                     var newPlayerId = parseInt(option.value);
                     if (options.model.isNew()) {
-                        options.model[options.field] = newPlayerId;
+                        options.model[options.field] = { Id: newPlayerId };
                     }
                     else {
                         options.model[options.field].Id = newPlayerId;
@@ -239,8 +239,8 @@
 
                 var dataId = $(triggerElement).closest('tr[data-uid]').attr('data-uid');
                 var data = $(triggerElement).closest('.k-grid').data('kendoGrid').dataSource.data();
-                var models = data.filter(function(dataItem) {
-                    return dataItem.uid === dataId;
+                var models = data.filter(function(model) {
+                    return model.uid === dataId;
                 });
                 if (models.length === 1) {
                     var match = {
@@ -287,10 +287,10 @@
                 if (setCompleted) {
                     completedCount++;
                     if (setResult.Player1TieBreak > setResult.Player2TieBreak || setResult.Player1Games > setResult.Player2Games) {
-                        player1Sets++;    
+                        player1Sets++;
                     }
                     else if(setResult.Player1TieBreak < setResult.Player2TieBreak || setResult.Player1Games < setResult.Player2Games){
-                        player2Sets++;    
+                        player2Sets++;
                     }
                 }
             }
@@ -305,6 +305,53 @@
             }
         }
         return isWinner;
+    }
+
+    function validateMatch(model) {
+        var isValid = false;
+        var messages = [];
+
+        if (model.MatchResultDisplay != null && model.MatchResultDisplay.length > 0) {
+            var matchResultRegex = /^(\d\d?-\d\d?\s?)*$/;
+            if (!matchResultRegex.test(model.MatchResultDisplay)) {
+                messages.push('Результат матча должен содержать как минимум результат одного сета (сет может быть неполным)');
+            }
+        }
+        if (model.Player1 == null || model.Player1.Id == null) {
+            messages.push('Выберите Игрока №1');
+        }
+        if (model.Player2 == null || model.Player2.Id == null) {
+            messages.push('Выберите Игрока №2');
+        }
+        if (model.StartDateTime != null && model.StartDateTime.length > 0) {
+            var date = new Date(model.StartDateTime);
+        }
+
+        if (messages.length === 0) {
+            isValid = true;
+        }
+        else {
+            var validationMessage = "Невозможно сохранить матч:";
+            for (var i = 0; i < messages.length; i++) {
+                validationMessage += "\n- " + messages[i];
+            }
+            console.log(validationMessage);
+            alert(validationMessage);
+        }
+        return isValid;
+    }
+
+    function formatDate(date) {
+        var formattedDate = "";
+        if(date && date.getTime) {
+            var dayDate = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
+            var month = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);
+            var hours = date.getHours() > 9 ? date.getHours() : '0' + date.getHours();
+            var minutes = date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes();
+
+            formattedDate = dayDate + '.' + month + '.' + date.getFullYear() + ' ' + hours + ':' + minutes;
+        }
+        return formattedDate;
     }
 
     var playerLevels = [
@@ -449,8 +496,8 @@
                     editor: function(container, options) {
                         playerDropDownFiltered(container, options, 'tournamentPlayerList');
                     },
-                    template: function(dataItem) {
-                        return kendo.htmlEncode(dataItem.FullName);
+                    template: function(model) {
+                        return kendo.htmlEncode(model.FullName);
                     },
                     width: 200
                 },
@@ -488,12 +535,7 @@
                         },
                         type: "POST",
                         dataType: "json",
-                        data: function(data) {
-                            data.Player1 = { Id: data.Player1};
-                            data.Player2 = { Id: data.Player2};
-
-                            return addAntiForgeryToken(data);
-                        }
+                        data: addAntiForgeryToken
                     },
                     update: {
                         url: function(match) {
@@ -515,6 +557,12 @@
                         type: "POST",
                         dataType: "json",
                         data: addAntiForgeryToken
+                    },
+                    parameterMap: function(match, operation) {
+                        if (operation === "update" || operation === "create") {
+                            
+                        }
+                        return match;
                     }
                 },
                 schema: {
@@ -525,29 +573,11 @@
                         id: "Id",
                         fields: {
                             Id: { editable: false, type: "number" },
-                            Player1: { },
-                            Player2: { },
-                            MatchResultDisplay: {
-                                editable: true,
-                                validation: {
-                                    required: false,
-                                    validation: function (input) {
-                                        if (input.is("[name='MatchResultDisplay']") && input.val() != "") {
-                                            var matchResultRegex = /^(\d\d?-\d\d?\s?)*$/;
-                                            if (matchResultRegex.test(input.val())) {
-                                                return true;
-                                            }
-                                            else {
-                                                alert('Результат матча должен содержать как минимум результат одного сета (сет может быть неполным)');
-                                                return false;
-                                            }
-                                        }
-                                        return true;
-                                    }
-                                }
-                            },
-                            Stage: { editable: true, type: "number" },
-                            StartDateString: { editable: false }
+                            Player1: {},
+                            Player2: {},
+                            MatchResultDisplay: { validation: { required: false } },
+                            Stage: { type: "number" },
+                            StartDateTime: { type: "date" }
                         }
                     }
                 },
@@ -580,6 +610,10 @@
             },
             save: function(e) {
                 console.log('grid save');
+
+                if (!validateMatch(e.model)) {
+                    e.preventDefault();
+                }
             },
             saveChanges: function(e) {
                 console.log('grid saveChanges');
@@ -605,12 +639,38 @@
                     },
                     headerAttributes: {
                         style: "display:none;"
-                    },
-                    width: 200
+                    }
                 },
                 {
-                    field: "StartDateString",
+                    field: "StartDateTime",
                     title: "Дата",
+                    editor: function(container, options) {
+                        var date =  options.model.StartDateTime;
+                        var minDate = new Date(2000,1,1);
+
+                        if (date < minDate) {
+                            date = null;
+                        }
+
+                        $(container).append('<input type="text" class="match-datetime"/>');
+                        $(container).find('.match-datetime').kendoDateTimePicker({
+                            format: "dd.MM.yyyy HH:mm",
+                            timeFormat: "HH:mm",
+                            value: date,
+                            change: function() {
+                                options.model[options.field] = this._value.toISOString();
+                                options.model.dirty = true;
+                            }
+                        });
+                    },
+                    template: function(model) {
+                        var dateDisplay = "";
+                        var minDate = new Date(2000,1,1);
+                        if (model.StartDateTime > minDate) {
+                            dateDisplay = formatDate(model.StartDateTime);
+                        }
+                        return dateDisplay;
+                    }
                 },
                 {
                     field: "Player1",
@@ -618,10 +678,9 @@
                     editor: function(container, options) {
                         playerDropDownFiltered(container, options, 'tournamentMatchPlayer1List');
                     },
-                    template: function(dataItem) {
-                        return kendo.htmlEncode(dataItem.Player1.FullName);
-                    },
-                    width: 200
+                    template: function(model) {
+                        return kendo.htmlEncode(model.Player1.FullName);
+                    }
                 },
                 {
                     field: "Player2",
@@ -629,13 +688,14 @@
                     editor: function(container, options) {
                         playerDropDownFiltered(container, options, 'tournamentMatchPlayer2List');
                     },
-                    template: function(dataItem) {
-                        return kendo.htmlEncode(dataItem.Player2.FullName);
+                    template: function(model) {
+                        return kendo.htmlEncode(model.Player2.FullName);
                     },
                 },
                 {
                     field: "MatchResultDisplay",
                     title: "Результат",
+                    width: 50
                 },
                 {
                     field: "Stage",
@@ -751,12 +811,11 @@
                     },
                     headerAttributes: {
                         style: "display:none;"
-                    },
-                    width: 200
+                    }
                 },
                 {
                     field: "StartDateString",
-                    title: "Дата",
+                    title: "Дата"
                 },
                 {
                     field: "Player1",
@@ -772,8 +831,7 @@
 
                         var html = '<span class="' + classes + '">' + match.Player1.FullName + '</span>';
                         return html;
-                    },
-                    width: 200
+                    }
                 },
                 {
                     field: "Player2",
