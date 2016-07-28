@@ -307,11 +307,11 @@
         return isWinner;
     }
 
-    function validateMatch(model) {
+    function validateMatch(model, isCompleted) {
         var isValid = false;
         var messages = [];
 
-        if (model.MatchResultDisplay != null && model.MatchResultDisplay.length > 0) {
+        if (!isCompleted && model.MatchResultDisplay != null && model.MatchResultDisplay.length > 0) {
             var matchResultRegex = /^(\d\d?-\d\d?\s?)*$/;
             if (!matchResultRegex.test(model.MatchResultDisplay)) {
                 messages.push('Результат матча должен содержать как минимум результат одного сета (сет может быть неполным)');
@@ -558,9 +558,9 @@
                         dataType: "json",
                         data: addAntiForgeryToken
                     },
-                    parameterMap: function(match, operation) {
-                        if (operation === "update" || operation === "create") {
-                            
+                    parameterMap: function (match, type) {
+                        if (type == "create" || type == "update") {
+                            match.StartDateTime = match.StartDateTime.toISOString();
                         }
                         return match;
                     }
@@ -590,8 +590,6 @@
                     }
                 },
                 error: function(e) {
-                    //display_kendoui_grid_error(e);
-                    // Cancel the changes
                     this.cancelChanges();
                 },
                 serverPaging: true,
@@ -611,7 +609,7 @@
             save: function(e) {
                 console.log('grid save');
 
-                if (!validateMatch(e.model)) {
+                if (!validateMatch(e.model, false)) {
                     e.preventDefault();
                 }
             },
@@ -648,7 +646,7 @@
                         var date =  options.model.StartDateTime;
                         var minDate = new Date(2000,1,1);
 
-                        if (date < minDate) {
+                        if (date < minDate || options.model.isNew()) {
                             date = null;
                         }
 
@@ -658,8 +656,7 @@
                             timeFormat: "HH:mm",
                             value: date,
                             change: function() {
-                                options.model[options.field] = this._value.toISOString();
-                                options.model.dirty = true;
+                                options.model.set(options.field, this._value);
                             }
                         });
                     },
@@ -679,7 +676,7 @@
                         playerDropDownFiltered(container, options, 'tournamentMatchPlayer1List');
                     },
                     template: function(model) {
-                        return kendo.htmlEncode(model.Player1.FullName);
+                        return model.Player1.FullName;
                     }
                 },
                 {
@@ -689,7 +686,7 @@
                         playerDropDownFiltered(container, options, 'tournamentMatchPlayer2List');
                     },
                     template: function(model) {
-                        return kendo.htmlEncode(model.Player2.FullName);
+                        return model.Player2.FullName;
                     },
                 },
                 {
@@ -743,6 +740,31 @@
                         type: "POST",
                         dataType: "json",
                         data: addAntiForgeryToken
+                    },
+                    update: {
+                        url: function(match) {
+                            var url = "@Html.Raw(Url.Action("ResultUpdate", "TournamentAdmin", new {tournamentId = Model.GeneralInfo.Id}))";
+                            return url;
+                        },
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    destroy: {
+                        url: function(match) {
+                            var url = "@Html.Raw(Url.Action("MatchDelete", "TournamentAdmin", new { tournamentId = Model.GeneralInfo.Id }))"
+                                + '&matchId=' + match.Id;
+                            return url;
+                        },
+                        type: "POST",
+                        dataType: "json",
+                        data: addAntiForgeryToken
+                    },
+                    parameterMap: function (match, type) {
+                        if (type == "create" || type == "update") {
+                            match.StartDateTime = match.StartDateTime.toISOString();
+                        }
+                        return match;
                     }
                 },
                 schema: {
@@ -753,11 +775,11 @@
                         id: "Id",
                         fields: {
                             Id: { editable: false, type: "number" },
-                            Player1: { },
-                            Player2: { },
-                            MatchResultDisplay: { editable: false },
-                            Stage: { editable: false, type: "number" },
-                            StartDateString: { editable: false }
+                            Player1: {},
+                            Player2: {},
+                            MatchResultDisplay: { validation: { required: false } },
+                            Stage: { type: "number" },
+                            StartDateTime: { type: "date" }
                         }
                     }
                 },
@@ -767,8 +789,6 @@
                     }
                 },
                 error: function(e) {
-                    //display_kendoui_grid_error(e);
-                    // Cancel the changes
                     this.cancelChanges();
                 },
                 serverPaging: true,
@@ -786,6 +806,10 @@
             },
             save: function(e) {
                 console.log('grid save');
+
+                if (!validateMatch(e.model, true)) {
+                    e.preventDefault();
+                }
             },
             saveChanges: function(e) {
                 console.log('grid saveChanges');
@@ -814,8 +838,35 @@
                     }
                 },
                 {
-                    field: "StartDateString",
-                    title: "Дата"
+                    field: "StartDateTime",
+                    title: "Дата",
+                    editor: function(container, options) {
+                        var date =  options.model.StartDateTime;
+                        var minDate = new Date(2000,1,1);
+
+                        if (date < minDate || options.model.isNew()) {
+                            date = null;
+                        }
+
+                        $(container).append('<input type="text" class="result-datetime"/>');
+                        $(container).find('.result-datetime').kendoDateTimePicker({
+                            format: "dd.MM.yyyy HH:mm",
+                            timeFormat: "HH:mm",
+                            value: date,
+                            change: function() {
+                                options.model[options.field] = this._value.toISOString();
+                                options.model.dirty = true;
+                            }
+                        });
+                    },
+                    template: function(model) {
+                        var dateDisplay = "";
+                        var minDate = new Date(2000,1,1);
+                        if (model.StartDateTime > minDate) {
+                            dateDisplay = formatDate(model.StartDateTime);
+                        }
+                        return dateDisplay;
+                    }
                 },
                 {
                     field: "Player1",
@@ -852,6 +903,7 @@
                 {
                     field: "MatchResultDisplay",
                     title: "Результат",
+                    width: 50
                 },
                 {
                     field: "Stage",
@@ -869,8 +921,8 @@
                 },
                 {
                     command:  [
-                        //{ name: "edit", text: 'Изменить' },
-                        //{ name: "destroy", text: 'Удалить' },
+                        { name: "edit", text: 'Изменить' },
+                        { name: "destroy", text: 'Удалить' },
                     ],
                 }
             ]

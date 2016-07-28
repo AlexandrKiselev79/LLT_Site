@@ -143,25 +143,10 @@ namespace Nop.Plugin.Misc.LLT.Controllers
         }
 
         [HttpPost]
-        public ActionResult ResultsList(DataSourceRequest command, int tournamentId)
-        {
-            var tournamentDetails = _tournamentService.GetDetailsById(tournamentId);
-            var matches = tournamentDetails.PlayedMatches.OrderBy(m => m.Stage).ToList();
-
-            var gridModel = new DataSourceResult
-            {
-                Data = matches,
-                Total = matches.Count
-            };
-
-            return Json(gridModel);
-        }
-
-        [HttpPost]
         public ActionResult MatchesList(DataSourceRequest command, int tournamentId)
         {
             var tournamentDetails = _tournamentService.GetDetailsById(tournamentId);
-            var matches = tournamentDetails.PlannedMatches.OrderBy(m => m.Stage).ToList();
+            var matches = tournamentDetails.PlannedMatches.OrderBy(m => m.Stage).ThenByDescending(m => m.StartDateTime).ToList();
 
             var gridModel = new DataSourceResult
             {
@@ -241,6 +226,45 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             var updatedMatch = _tournamentService.GetMatchById(tournamentId, match.Id);
             updatedMatch.CompletionReason = match.CompletionReason;
             updatedMatch.WinnerId = match.WinnerId;
+
+            _tournamentService.UpdateMatch(tournament, updatedMatch);
+            return Json(tournament);
+        }
+
+        [HttpPost]
+        public ActionResult ResultsList(DataSourceRequest command, int tournamentId)
+        {
+            var tournamentDetails = _tournamentService.GetDetailsById(tournamentId);
+            var matches = tournamentDetails.PlayedMatches.OrderBy(m => m.Stage).ThenByDescending(m => m.StartDateTime).ToList();
+
+            var gridModel = new DataSourceResult
+            {
+                Data = matches,
+                Total = matches.Count
+            };
+
+            return Json(gridModel);
+        }
+
+        [HttpPost]
+        public ActionResult ResultUpdate(int tournamentId, MatchModel match)
+        {
+            var tournament = _tournamentService.GetById(tournamentId);
+            var updatedMatch = _tournamentService.GetMatchById(tournamentId, match.Id);
+            updatedMatch.Player1 = _playerService.GetById(match.Player1.Id);
+            updatedMatch.Player2 = _playerService.GetById(match.Player2.Id);
+            updatedMatch.Stage = match.Stage;
+            
+            if (match.StartDateTime > Constants.MinimalSqlDate)
+            {
+                updatedMatch.StartDateTime = match.StartDateTime;
+            }
+            else
+            {
+                updatedMatch.StartDateTime = Constants.MinimalSqlDate;
+            }
+
+            updatedMatch.CompletionReason = match.MatchResultDisplay;
 
             _tournamentService.UpdateMatch(tournament, updatedMatch);
             return Json(tournament);

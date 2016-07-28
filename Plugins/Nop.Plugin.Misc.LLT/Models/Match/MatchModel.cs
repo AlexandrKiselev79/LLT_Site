@@ -64,7 +64,11 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
 
             if (WinnerId > 0)
             {
-                result.AppendFormat(" ({0})", CompletionReason);
+                if (result.Length > 0)
+                {
+                    result.Append(" ");
+                }
+                result.AppendFormat("{0}", CompletionReason);
             }
             return result.ToString();
         }
@@ -93,18 +97,6 @@ namespace Nop.Plugin.Misc.LLT.Models.Match
         public TennisClubModel Club { get; set; }
         public int CourtNumber { get; set; }
         public DateTime StartDateTime { get; set; }
-
-        public string StartDateString
-        {
-            get
-            {
-                return this.StartDateTime.GetDateString(true);
-            }
-            set
-            {
-                this.StartDateTime.SetDateString(value);
-            }
-        }
 
         public bool IsWonBy(int playerId)
         {
