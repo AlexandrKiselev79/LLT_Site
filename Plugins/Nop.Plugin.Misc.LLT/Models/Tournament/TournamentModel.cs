@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Nop.Plugin.Misc.LLT.Enums;
 using Nop.Plugin.Misc.LLT.Models.TennisClub;
@@ -12,6 +13,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Tournament
 
         public string Name { get; set; }
 
+        [UIHint("Date")]
         public DateTime StartDate { get; set; }
 
         public string StartDateString
@@ -23,6 +25,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Tournament
             }
         }
 
+        [UIHint("Date")]
         public DateTime EndDate { get; set; }
 
         public string EndDateString

@@ -75,8 +75,7 @@ namespace Nop.Plugin.Misc.LLT.Controllers
             _tournamentService.Create(tournament);
             return continueEditing ? RedirectToAction("Edit", new { id = tournament.Id }) : RedirectToAction("List");
         }
-
-        //edit
+        
         public ActionResult Edit(int id)
         {
             var tournament = _tournamentService.GetDetailsById(id);
@@ -84,6 +83,14 @@ namespace Nop.Plugin.Misc.LLT.Controllers
                 return RedirectToAction("List");
 
             return View(tournament);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult Edit(TournamentDetailsModel model, bool continueEditing)
+        {
+            var tournament = model.GeneralInfo.ToEntity();
+            _tournamentService.Update(tournament);
+            return continueEditing ? RedirectToAction("Edit", new { id = tournament.Id }) : RedirectToAction("List");
         }
 
         [HttpPost]
