@@ -9,7 +9,7 @@
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
-        <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
+            <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
             Редактирование игрока - @Model.FullName @Html.ActionLink("(вернуться к списку)", "List")
         </div>
         <div class="options">
@@ -19,18 +19,20 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#player-delete').on('click', function () {
-                var data = addAntiForgeryToken({});
+                if (confirm("Вы действительно хотите удалить информацию об игроке '@Model.FullName'?")) {
+                    var data = addAntiForgeryToken({});
 
-                $.ajax({
-                    url: "@Html.Raw(Url.Action("Delete", "PlayerAdmin", new { playerId = Model.Id }))",
-                    data: data,
-                    dataType: "json",
-                    type: "POST",
+                    $.ajax({
+                        url: "@Html.Raw(Url.Action("Delete", "PlayerAdmin", new { playerId = Model.Id }))",
+                        data: data,
+                        dataType: "json",
+                        type: "POST",
                     }).done(function (response) {
                         window.location.href = "@Html.Raw(Url.Action("List", "PlayerAdmin"))";
                     });
+                }
             });
         });
     </script>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Nop.Plugin.Misc.LLT.Enums;
 using Nop.Plugin.Misc.LLT.Infrastructure;
@@ -29,6 +30,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
 
         public string MiddleName { get; set; }
 
+        [UIHint("Date")]
         public DateTime DateOfBirth { get; set; }
 
         public string DateOfBirthString
@@ -113,6 +115,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
             }
         }
 
+        [UIHint("DecimalAsInt")]
         public decimal Height { get; set; }
 
         public string HeightString
@@ -120,6 +123,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
             get { return Height.ToString("#.##"); }
         }
 
+        [UIHint("DecimalAsInt")]
         public decimal Weight { get; set; }
 
         public string WeightString
@@ -127,6 +131,7 @@ namespace Nop.Plugin.Misc.LLT.Models.Player
             get { return Weight.ToString("#.##"); }
         }
 
+        [UIHint("Date")]
         public DateTime PlayFrom { get; set; }
 
         public string PlayFromString
