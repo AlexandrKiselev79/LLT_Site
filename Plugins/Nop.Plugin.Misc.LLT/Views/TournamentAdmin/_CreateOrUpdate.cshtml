@@ -584,8 +584,6 @@
                 requestEnd: function(e) {
                     if (e.type == "create" || e.type == "update") {
                         this.read();
-                    }
-                    if (e.type == "update") {
                         $("#tournament-results-grid").data('kendoGrid').dataSource.read();
                     }
                 },
@@ -762,7 +760,9 @@
                     },
                     parameterMap: function (match, type) {
                         if (type == "create" || type == "update") {
-                            match.StartDateTime = match.StartDateTime.toISOString();
+                            if (match.StartDateTime && match.StartDateTime.toISOString) {
+                                match.StartDateTime = match.StartDateTime.toISOString();
+                            }
                         }
                         return match;
                     }

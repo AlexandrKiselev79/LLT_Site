@@ -133,6 +133,14 @@ body .navbar {
     padding-right: 20px;
 }
 
+#tournament-matches-grid .match-datetime, #tournament-results-grid .result-datetime {
+    max-width: 155px;
+}
+
+.ms-parent.player-select {
+    min-width: 120px;
+}
+
 /* Admin END */
 
 /* Multiple Select Overrides */
