@@ -100,6 +100,15 @@ function addAntiForgeryToken(data) {
     return data;
 };
 
+function disableFormSubmitOnEnter() {
+    $(window).keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+}
+
 
 // Ajax activity indicator bound to ajax start/stop document events
 $(document).ajaxStart(function () {

@@ -41,6 +41,8 @@
 </div>
 <script>
     $(document).ready(function() {
+        disableFormSubmitOnEnter();
+
         $("#tournament-edit").kendoTabStrip({
             animation:  {
                 open: {
@@ -85,11 +87,16 @@
                 placeholder: "Выбор игрока",
                 onClick: function (option) {
                     var newPlayerId = parseInt(option.value);
-                    if (options.model.isNew()) {
-                        options.model[options.field] = { Id: newPlayerId };
+                    if (dropDownId === "tournamentPlayerList") {
+                        options.model[options.field] = newPlayerId;
                     }
                     else {
-                        options.model[options.field].Id = newPlayerId;
+                        if (options.model.isNew()) {
+                            options.model[options.field] = { Id: newPlayerId };
+                        }
+                        else {
+                            options.model[options.field].Id = newPlayerId;
+                        }
                     }
                     options.model.dirty = true;
                 }
