@@ -141,6 +141,25 @@ body .navbar {
     min-width: 120px;
 }
 
+#tournament-matches-grid .popover-title button {
+    padding: 0px 10px;
+    position: relative;
+    top: -3px;
+}
+
+#tournament-matches-grid .popover-content label {
+    cursor: pointer;
+    padding-left: 10px;
+}
+
+#tournament-matches-grid .popover-content input {
+    display: inline;
+}
+
+#tournament-matches-grid .popover-content button {
+    padding: 5px;
+}
+
 /* Admin END */
 
 /* Multiple Select Overrides */

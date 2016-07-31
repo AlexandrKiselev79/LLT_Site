@@ -217,8 +217,9 @@
             popupHtml.push('            <input type="text" class="form-control" placeholder=""/>');
             popupHtml.push('        </div>');
             popupHtml.push('        <div class="form-group">');
-            popupHtml.push('            <label><input type="radio" class="form-control" name="winner" value="Player1" checked="checked"/>Player 1</label>');
-            popupHtml.push('            <label><input type="radio" class="form-control" name="winner" value="Player2"/>Player 2</label>');
+            popupHtml.push('            <div>Победитель<div>');
+            popupHtml.push('            <div><label>Player 1<input type="radio" class="form-control" name="winner" value="Player1" checked="checked"/></label></div>');
+            popupHtml.push('            <div><label>Player 2<input type="radio" class="form-control" name="winner" value="Player2"/></label></div>');
             popupHtml.push('        </div>');
             popupHtml.push('        <span class="validation-message" style="display:none;color:red;">Заполните обязательное поле</span>');
             popupHtml.push('        <div class="controls"><button type="button" class="btn btn-default complete">Завершить</button></div>');
@@ -330,8 +331,33 @@
         if (model.Player2 == null || model.Player2.Id == null) {
             messages.push('Выберите Игрока №2');
         }
+        if (model.Player1 != null && model.Player1.Id == model.Player2.Id) {
+            messages.push('Выберите разных игроков');
+        }
         if (model.StartDateTime != null && model.StartDateTime.length > 0) {
             var date = new Date(model.StartDateTime);
+        }
+
+        if (messages.length === 0) {
+            if (stagesValidationDict[model.Stage] != null) {
+                var allMatches = $("#tournament-matches-grid").data('kendoGrid').dataSource.data().slice();
+                allMatches.concat($("#tournament-results-grid").data('kendoGrid').dataSource.data().slice());
+
+                var matchesWithStage = allMatches.filter(function(item){
+                    return item.Id != 0 && item.Stage === model.Stage;
+                });
+                if (matchesWithStage.length >= stagesValidationDict[model.Stage]) {
+                    messages.push('На выбранной стадии турнира не может быть больше матчей чем ' + stagesValidationDict[model.Stage]);
+                }
+            }
+            if (isCompleted) {
+                var matchesWithEarlierStages = model.parent().filter(function(item) {
+                    return item.Id !== 0 && item.Stage > model.Stage;
+                });
+                if (matchesWithEarlierStages.length > 0) {
+                    messages.push('Матчи на предыдущих стадиях должны быть окончены прежде чем данный матч может быть закончен');
+                }
+            }
         }
 
         if (messages.length === 0) {
@@ -340,7 +366,7 @@
         else {
             var validationMessage = "Невозможно сохранить матч:";
             for (var i = 0; i < messages.length; i++) {
-                validationMessage += "\n- " + messages[i];
+                validationMessage += "\n - " + messages[i];
             }
             console.log(validationMessage);
             alert(validationMessage);
@@ -360,6 +386,14 @@
         }
         return formattedDate;
     }
+
+    var stagesValidationDict = {
+        0: 1,
+        1: 2,
+        2: 4,
+        3: 8
+    };
+
 
     var playerLevels = [
         @{
